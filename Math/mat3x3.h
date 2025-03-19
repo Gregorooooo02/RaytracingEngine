@@ -22,7 +22,7 @@ namespace math {
             
             void inverse();
             void transpose();
-        private:
+
             float determinant(mat3x3&);
     };
 } // namespace math

@@ -25,6 +25,7 @@ namespace math {
             void transpose();
         private:
             float determinant(mat4x4&);
+            float determinant3x3(float[3][3]);
 
     };
 } // namespace math
