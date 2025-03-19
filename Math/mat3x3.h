@@ -12,16 +12,16 @@ namespace math {
             ~mat3x3();
             mat3x3& operator=(const mat3x3&);
 
-            inline void add(const mat3x3&);
-            inline void subtract(const mat3x3&);
-            inline void multiply(const mat3x3&);
-            inline void multiply(float);
-            inline void divide(float);
+            void add(const mat3x3&);
+            void subtract(const mat3x3&);
+            void multiply(const mat3x3&);
+            void multiply(float);
+            void divide(float);
 
             static mat3x3 createIdentity();
             
-            inline void inverse();
-            inline void transpose();
+            void inverse();
+            void transpose();
         private:
             float determinant(mat3x3&);
     };

@@ -13,10 +13,11 @@ project(RaytracingEngine)
 file(GLOB SOURCES
     main.cpp
     Window/*.cpp
+    Math/*.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC Window)
+target_include_directories(${PROJECT_NAME} PUBLIC Window Math)
 
 find_package(glfw3 3.3 REQUIRED)
 find_package(Vulkan REQUIRED)

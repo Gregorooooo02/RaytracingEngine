@@ -25,9 +25,7 @@ mat3x3::mat3x3(float a, float b, float c,
     }
 }
 
-mat3x3::~mat3x3() {
-    delete[] data;
-}
+mat3x3::~mat3x3() {}
 
 mat3x3& mat3x3::operator=(const mat3x3& m) {
     for (int i = 0; i < 3; i++) {
