@@ -1,6 +1,5 @@
 #include "vec3.h"
 #include "quaternion.h"
-
 #include <cmath>
 #include <stdexcept>
 

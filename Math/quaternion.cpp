@@ -1,8 +1,11 @@
 #include "quaternion.h"
-
 #include <cmath>
 
 using namespace math;
+
+float math::degreesToRadians(float degrees) {
+    return degrees * M_PI / 180;
+}
 
 quaternion::quaternion(float s, vec3& v) : s(s), v(v) {}
 
@@ -97,3 +100,4 @@ void quaternion::convertToUnitNorm() {
     this->s = std::cosf(angle/2);
     this->v.multiply(std::sinf(angle/2));
 }
+
