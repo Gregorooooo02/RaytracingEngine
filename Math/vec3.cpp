@@ -1,4 +1,6 @@
 #include "vec3.h"
+#include "quaternion.h"
+
 #include <cmath>
 #include <stdexcept>
 
@@ -36,10 +38,12 @@ void vec3::substract(vec3 &vec) {
   this->z -= vec.z;
 }
 
-void vec3::multiply(float multiplier) {
+vec3 vec3::multiply(float multiplier) {
   this->x *= multiplier;
   this->y *= multiplier;
   this->z *= multiplier;
+
+  return *this;
 }
 
 void vec3::divide(float divider) {
@@ -77,4 +81,18 @@ vec3 vec3::crossProduct(vec3 &vec) {
               this->x * vec.y - this->y * vec.x);
 
   return result;
+}
+
+vec3 vec3::rotate(float angle, vec3& axis) {
+  quaternion p(0, *this);
+
+  axis.normalize();
+
+  quaternion q(angle, axis);
+  q.convertToUnitNorm();
+
+  quaternion qInverse = q.inverse();
+  quaternion rotatedVector = q.multiply(p).multiply(qInverse);
+
+  return rotatedVector.v;
 }

@@ -12,12 +12,14 @@ namespace math {
 
       void add(vec3 &vec);
       void substract(vec3 &vec);
-      void multiply(float multiplier);
+      vec3 multiply(float multiplier);
       void divide(float divider);
       float len();
 
       void normalize();
       float dotProduct(vec3 &vec);
       vec3 crossProduct(vec3 &vec);
+
+      vec3 rotate(float, vec3&);
   };
 } // namespace math
