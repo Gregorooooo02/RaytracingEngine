@@ -1,6 +1,8 @@
 #include "mat4x4.h"
 #include "mat3x3.h"
 
+#include <cmath>
+
 using namespace math;
 
 mat4x4::mat4x4() {
@@ -174,4 +176,78 @@ float mat4x4::determinant3x3(float m[3][3]) {
     }
 
     return det;
+}
+
+void mat4x4::translate(const vec3& v) {
+    mat4x4 translation = this->createIdentity();
+
+    translation.data[0][3] = v.x;
+    translation.data[1][3] = v.y;
+    translation.data[2][3] = v.z;
+}
+
+void mat4x4::scale(const vec3& v) {
+    mat4x4 scaling = this->createIdentity();
+
+    scaling.data[0][0] = v.x;
+    scaling.data[1][1] = v.y;
+    scaling.data[2][2] = v.z;
+}
+
+void mat4x4::scale(const float scalar) {
+    mat4x4 scaling = this->createIdentity();
+
+    scaling.data[0][0] = scaling.data[1][1] = scaling.data[2][2] = scalar;
+}
+
+void mat4x4::rotate(float angle, vec3& v) {
+    v.normalize();
+
+    float sin = (float)std::sin(M_PI * angle / 180.0f);
+    float cos = (float)std::cos(M_PI * angle / 180.0f);
+    float c = 1.0f - cos;
+
+    mat4x4 rotation = this->createIdentity();
+
+    rotation.data[0][0] = v.x * v.x + cos * (1 - v.x * v.x);
+    rotation.data[1][0] = v.x * v.y * c - v.z * sin;
+    rotation.data[2][0] = v.x * v.z * c + v.y * sin;
+
+    rotation.data[0][1] = v.x * v.y * c + v.z * sin;
+    rotation.data[1][1] = v.y * v.y + cos * (1 - v.y * v.y);
+    rotation.data[2][1] = v.y * v.z * c - v.x * sin;
+
+    rotation.data[0][2] = v.x * v.z * c - v.y * sin;
+    rotation.data[1][2] = v.y * v.z * c + v.x * sin;
+    rotation.data[2][2] = v.z * v.z + cos * (1 - v.z * v.z);
+}
+
+void mat4x4::rotateX(const float angle) {
+    mat4x4 rotation = this->createIdentity();
+
+    rotation.data[1][1] = (float)std::cos(M_PI * angle / 180.0f);
+    rotation.data[1][2] = (float)std::sin(M_PI * angle / 180.0f);
+
+    rotation.data[2][1] = -rotation.data[1][2];
+    rotation.data[2][2] = rotation.data[1][1];
+}
+
+void mat4x4::rotateY(const float angle) {
+    mat4x4 rotation = this->createIdentity();
+
+    rotation.data[0][0] = (float)std::cos(M_PI * angle / 180.0f);
+    rotation.data[0][2] = -(float)std::sin(M_PI * angle / 180.0f);
+
+    rotation.data[2][0] = -rotation.data[0][2];
+    rotation.data[2][2] = rotation.data[0][0];
+}
+
+void mat4x4::rotateZ(const float angle) {
+    mat4x4 rotation = this->createIdentity();
+
+    rotation.data[0][0] = (float)std::cos(M_PI * angle / 180.0f);
+    rotation.data[0][1] = (float)std::sin(M_PI * angle / 180.0f);
+
+    rotation.data[1][0] = -rotation.data[0][1];
+    rotation.data[1][1] = rotation.data[0][0];
 }
