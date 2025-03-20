@@ -1,11 +1,8 @@
 #include "quaternion.h"
+#include "util.h"
 #include <cmath>
 
 using namespace math;
-
-float math::degreesToRadians(float degrees) {
-    return degrees * M_PI / 180;
-}
 
 quaternion::quaternion(float s, vec3& v) : s(s), v(v) {}
 

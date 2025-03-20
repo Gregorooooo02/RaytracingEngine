@@ -27,5 +27,4 @@ namespace math {
             void convertToUnitNorm();
     };
 
-    float degreesToRadians(float degrees);
 } // namespace math

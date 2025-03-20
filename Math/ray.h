@@ -1,6 +1,7 @@
 #pragma once
 #include "vec3.h"
 
+//TODO: poczytac i poprawic
 namespace math {
   class ray {
     public:
