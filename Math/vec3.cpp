@@ -2,45 +2,47 @@
 #include <cmath>
 #include <stdexcept>
 
-Vec3::Vec3() {
+using namespace math;
+
+vec3::vec3() {
   this->x = 0.0f;
   this->y = 0.0f;
   this->z = 0.0f;
 }
 
-Vec3::Vec3(float x, float y, float z) {
+vec3::vec3(float x, float y, float z) {
   this->x = x;
   this->y = y;
   this->z = z;
 }
 
-Vec3::Vec3(Vec3 &vec) {
+vec3::vec3(vec3 &vec) {
   this->x = vec.x;
   this->y = vec.y;
   this->z = vec.z;
 }
 
-Vec3::~Vec3() {}
+vec3::~vec3() {}
 
-void Vec3::add(Vec3 &vec) {
+void vec3::add(vec3 &vec) {
   this->x += vec.x;
   this->y += vec.y;
   this->z += vec.z;
 }
 
-void Vec3::substract(Vec3 &vec) {
+void vec3::substract(vec3 &vec) {
   this->x -= vec.x;
   this->y -= vec.y;
   this->z -= vec.z;
 }
 
-void Vec3::multiply(float multiplier) {
+void vec3::multiply(float multiplier) {
   this->x *= multiplier;
   this->y *= multiplier;
   this->z *= multiplier;
 }
 
-void Vec3::divide(float divider) {
+void vec3::divide(float divider) {
   if (divider == 0.0f) {
     throw std::invalid_argument("cant divide by 0");
   }
@@ -50,12 +52,12 @@ void Vec3::divide(float divider) {
   this->z /= divider;
 }
 
-float Vec3::len() {
+float vec3::len() {
   return (float)std::sqrt(std::pow(this->x, 2) + std::pow(this->y, 2) +
                           std::pow(this->z, 2));
 }
 
-void Vec3::normalize() {
+void vec3::normalize() {
   float length = this->len();
 
   if (length == 0.0f) {
@@ -65,12 +67,12 @@ void Vec3::normalize() {
   this->divide(length);
 }
 
-float Vec3::dot_product(Vec3 &vec) {
+float vec3::dotProduct(vec3 &vec) {
   return this->x * vec.x + this->y * vec.y + this->z * vec.z;
 }
 
-Vec3 Vec3::cross_product(Vec3 &vec) {
-  Vec3 result(this->y * vec.z - this->z * vec.y,
+vec3 vec3::crossProduct(vec3 &vec) {
+  vec3 result(this->y * vec.z - this->z * vec.y,
               this->z * vec.x - this->x * vec.z,
               this->x * vec.y - this->y * vec.x);
 
