@@ -13,6 +13,7 @@ project(RaytracingEngine)
 file(GLOB SOURCES
     main.cpp
     Window/*.cpp
+    Math/*.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
