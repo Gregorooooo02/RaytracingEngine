@@ -18,7 +18,7 @@ vec3::vec3(float x, float y, float z) {
   this->z = z;
 }
 
-vec3::vec3(vec3 &vec) {
+vec3::vec3(const vec3 &vec) {
   this->x = vec.x;
   this->y = vec.y;
   this->z = vec.z;

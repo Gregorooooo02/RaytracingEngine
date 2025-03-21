@@ -6,8 +6,10 @@ namespace math {
       float x, y, z;
 
       vec3();
+
       vec3(float x, float y, float z);
-      vec3(vec3 &vec);
+      vec3(const vec3 &vec);
+
       ~vec3();
 
       vec3& add(vec3 &vec);
