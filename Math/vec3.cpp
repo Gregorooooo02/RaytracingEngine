@@ -25,19 +25,23 @@ vec3::vec3(vec3 &vec) {
 
 vec3::~vec3() {}
 
-void vec3::add(vec3 &vec) {
+vec3& vec3::add(vec3 &vec) {
   this->x += vec.x;
   this->y += vec.y;
   this->z += vec.z;
+
+  return *this;
 }
 
-void vec3::substract(vec3 &vec) {
+vec3& vec3::substract(vec3 &vec) {
   this->x -= vec.x;
   this->y -= vec.y;
   this->z -= vec.z;
+
+  return *this;
 }
 
-vec3 vec3::multiply(float multiplier) {
+vec3& vec3::multiply(float multiplier) {
   this->x *= multiplier;
   this->y *= multiplier;
   this->z *= multiplier;
@@ -45,7 +49,7 @@ vec3 vec3::multiply(float multiplier) {
   return *this;
 }
 
-void vec3::divide(float divider) {
+vec3& vec3::divide(float divider) {
   if (divider == 0.0f) {
     throw std::invalid_argument("cant divide by 0");
   }
@@ -53,6 +57,8 @@ void vec3::divide(float divider) {
   this->x /= divider;
   this->y /= divider;
   this->z /= divider;
+
+  return *this;
 }
 
 float vec3::len() {
@@ -60,7 +66,7 @@ float vec3::len() {
                           std::pow(this->z, 2));
 }
 
-void vec3::normalize() {
+vec3& vec3::normalize() {
   float length = this->len();
 
   if (length == 0.0f) {
@@ -68,6 +74,8 @@ void vec3::normalize() {
   }
 
   this->divide(length);
+
+  return *this;
 }
 
 float vec3::dotProduct(vec3 &vec) {

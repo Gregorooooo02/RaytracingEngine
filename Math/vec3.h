@@ -10,13 +10,13 @@ namespace math {
       vec3(vec3 &vec);
       ~vec3();
 
-      void add(vec3 &vec);
-      void substract(vec3 &vec);
-      vec3 multiply(float multiplier);
-      void divide(float divider);
+      vec3& add(vec3 &vec);
+      vec3& substract(vec3 &vec);
+      vec3& multiply(float multiplier);
+      vec3& divide(float divider);
       float len();
 
-      void normalize();
+      vec3& normalize();
       float dotProduct(vec3 &vec);
       vec3 crossProduct(vec3 &vec);
 

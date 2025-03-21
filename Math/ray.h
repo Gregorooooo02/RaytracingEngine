@@ -1,15 +1,13 @@
 #pragma once
 #include "vec3.h"
 
-//TODO: poczytac i poprawic
 namespace math {
   class ray {
     public:
-      vec3 origin;
-      vec3 destination;
+      vec3 o;
+      vec3 d;
       ray();
-      ray(vec3 &origin, vec3 &destination);
-      vec3 point_at(float t);
-      ~ray();
+      ray(vec3 &o, vec3 &a);
+      vec3 hit_at(float t);
   };
 }
