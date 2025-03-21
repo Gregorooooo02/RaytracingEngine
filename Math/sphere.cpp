@@ -21,6 +21,13 @@ sphere::sphere(vec3 &center, float radius) {
   this->radius = radius;
 }
 
+sphere::sphere(const sphere &sphere) {
+  this->center = sphere.center;
+  this->radius = sphere.radius;
+}
+
+sphere::~sphere() {}
+
 bool sphere::hit(ray &ray) {
   vec3 oc = ray.o.substract(this->center);
 
@@ -30,5 +37,5 @@ bool sphere::hit(ray &ray) {
 
   float discriminant = math::quadDiscr(a, b, c);
 
-  return discriminant > 0;
+  return discriminant >= 0;
 }

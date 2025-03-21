@@ -10,6 +10,7 @@ namespace math {
       float radius;
       sphere();
       sphere(vec3 &center,  float radius);
+      sphere(const sphere &sphere);
       ~sphere();
       bool hit(ray &ray);
   };
