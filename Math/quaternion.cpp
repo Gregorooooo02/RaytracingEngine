@@ -37,9 +37,9 @@ quaternion quaternion::substract(quaternion& q){
 
 quaternion quaternion::multiply(quaternion& q) {
     float scalar = this->s * q.s - this->v.dotProduct(q.v);
-    vec3 temp1 = this->v.multiply(q.s);
-    vec3 temp2 = q.v.multiply(this->s);
-    vec3 temp3 = this->v.crossProduct(q.v);
+    vec3 temp1(this->v.multiply(q.s));
+    vec3 temp2(q.v.multiply(this->s));
+    vec3 temp3(this->v.crossProduct(q.v));
 
     temp1.add(temp2);
     temp1.add(temp3);
