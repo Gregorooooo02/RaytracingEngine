@@ -1,7 +1,6 @@
 #include "sphere.h"
 #include "ray.h"
 #include "util.h"
-
 #include <stdexcept>
 
 using namespace math;
@@ -21,7 +20,14 @@ sphere::sphere(vec3 &center, float radius) {
   this->radius = radius;
 }
 
-bool sphere::hit(ray &ray) {
+sphere::sphere(const sphere &sphere) {
+  this->center = sphere.center;
+  this->radius = sphere.radius;
+}
+
+sphere::~sphere() {}
+
+bool sphere::hit(ray &ray, float tMin, float tMax) {
   vec3 oc = ray.o.substract(this->center);
 
   float a = ray.d.dotProduct(ray.d);
@@ -30,5 +36,12 @@ bool sphere::hit(ray &ray) {
 
   float discriminant = math::quadDiscr(a, b, c);
 
-  return discriminant > 0;
+  if (discriminant < 0) {
+    return false;
+  }
+
+  float x1 = math::root(b, (discriminant * -1), a);
+  float x2 = math::root(b, discriminant, a);
+
+  return (x1 > tMin && x1 < tMax) || (x2 > tMin && x2 < tMax);
 }
