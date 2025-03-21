@@ -4,7 +4,7 @@
 #include "vec3.h"
 
 namespace math {
-  class sphere : public primitive {
+  class sphere {
     public:
       vec3 center;
       float radius;
@@ -12,7 +12,7 @@ namespace math {
       sphere(vec3 &center,  float radius);
       sphere(const sphere &sphere);
       ~sphere();
-      bool hit(ray &ray, float tMin, float tMax) override;
+      bool hit(ray &ray, float tMin, float tMax);
   };
 
 }
