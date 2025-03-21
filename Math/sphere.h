@@ -1,5 +1,6 @@
 #pragma once
-#include "ray.h"
+
+#include "primitive.h"
 #include "vec3.h"
 
 namespace math {
