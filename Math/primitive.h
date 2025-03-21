@@ -4,6 +4,6 @@
 namespace math {
   class primitive {
     public:
-      virtual bool hit(ray &ray, float tMin, float tMax) = 0;
+      virtual bool hit(ray &ray) = 0;
   };
 }
