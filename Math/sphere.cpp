@@ -1,7 +1,6 @@
 #include "sphere.h"
 #include "ray.h"
 #include "util.h"
-#include <cmath>
 #include <stdexcept>
 
 using namespace math;
