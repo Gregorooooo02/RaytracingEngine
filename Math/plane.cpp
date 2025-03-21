@@ -35,6 +35,15 @@ plane::plane(vec3& normal, vec3& point) {
     this->point = point;
 }
 
+plane::plane(vec3& p1, vec3& p2, vec3& p3) {
+    this->normal = (p2.substract(p1)).crossProduct(p3.substract(p1)).normalize();
+    this->a = this->normal.x;
+    this->b = this->normal.y;
+    this->c = this->normal.z;
+    this->d = -this->normal.dotProduct(p1);
+    this->point = p1;
+}
+
 plane::plane(const plane& plane) {
     this->a = plane.a;
     this->b = plane.b;

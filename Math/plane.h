@@ -10,6 +10,7 @@ namespace math {
             plane(float, float, float, float);
             plane(const vec3&, float);
             plane(vec3&, vec3&);
+            plane(vec3&, vec3&, vec3&);
             plane(const plane&);
             ~plane();
 
