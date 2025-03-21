@@ -1,4 +1,5 @@
 #include "mat4x4.h"
+
 #include <cmath>
 
 using namespace math;

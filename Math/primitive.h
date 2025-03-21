@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ray.h"
+
 namespace math {
   class primitive {
     public:

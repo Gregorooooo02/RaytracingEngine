@@ -1,8 +1,8 @@
 #pragma once
+
 #include "primitive.h"
 #include "vec3.h"
 
-//TODO: implementacja hit()
 namespace math {
   class sphere : primitive {
     public:

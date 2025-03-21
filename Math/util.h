@@ -1,5 +1,7 @@
 #pragma once
+
 #include <math.h>
+
 namespace math {
     inline float degreesToRadians(float degrees) {
       return degrees * (float)M_PI / 180;
