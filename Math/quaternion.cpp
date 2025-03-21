@@ -98,3 +98,6 @@ void quaternion::convertToUnitNorm() {
     this->v.multiply(std::sinf(angle/2));
 }
 
+float math::degreesToRadians(float degrees) {
+    return degrees * M_PI / 180;
+}
