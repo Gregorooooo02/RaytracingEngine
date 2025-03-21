@@ -6,6 +6,9 @@
 namespace math {
     class triangle : primitive {
         public:
+            vec3 vertices[3];
+            vec3 normals[3];
+
             triangle();
             triangle(vec3&, vec3&, vec3&);
             triangle(vec3&, vec3&, vec3&, vec3&, vec3&, vec3&);
@@ -13,8 +16,5 @@ namespace math {
             triangle(const triangle&);
 
             bool hit(ray&);
-        private:
-            vec3 vertices[3];
-            vec3 normals[3];
     };
 } // namespace math
