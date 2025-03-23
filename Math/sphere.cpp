@@ -20,6 +20,8 @@ sphere::sphere(vec3 &center, float radius) {
   this->radius = radius;
 }
 
+sphere::~sphere() {}
+
 sphere::sphere(const sphere &sphere) {
   this->center = sphere.center;
   this->radius = sphere.radius;
