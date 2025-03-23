@@ -5,7 +5,11 @@
 
 using namespace math;
 
-quaternion::quaternion(float s, vec3& v) : s(s), v(v) {}
+quaternion::quaternion(float s, vec3& v) {
+    float halfAngle = s/2.0f;
+    this->s = std::cosf(halfAngle);
+    this->v = v.multiply(std::sinf(halfAngle));
+}
 
 quaternion::~quaternion() {}
 

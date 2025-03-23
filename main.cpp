@@ -118,7 +118,7 @@ int main() {
 
     std::cout << std::endl;
     // Additional exercises!!
-    // Ex 1 - check if all the matrices methods work correctly
+    // Ex 1 & 2 - check if all the matrices methods work correctly
     math::mat3x3 m1(1, 2, 3,
                     4, 5, 6,
                     7, 8, 9);
@@ -168,6 +168,17 @@ int main() {
     m9.inverse();
     printMatrix(m9);
     std::cout << std::endl;
+
+    // Ex 3 - Rotate the vector (1, 0, 0, 1) by 90 degrees around the Y axis
+
+    // Ex 4 - Prove the lack of commutativity of matrix multiplication using an implemented example
+
+    // Ex 5 - implement the quaternion class with its methods - DONE
+    // Ex 6 - rotate the vector (3, 1, 3) around the vector (1, 0 ,1) by 90 degrees
+    math::vec3 v7(3, 1, 3);
+    math::vec3 axis(1, 0, 1);
+    math::vec3 v7r = v7.rotate(90, axis);
+    std::cout << "Wektor v7 po rotacji o 90 stopni wokół osi (1, 0, 1): " << v7r.x << ", " << v7r.y << ", " << v7r.z << std::endl;
 
     return 0;
 }

@@ -102,11 +102,11 @@ vec3 vec3::crossProduct(vec3 &vec) {
 }
 
 vec3 vec3::rotate(float angle, vec3& axis) {
+  float angleRad = angle * M_PI / 180.0f;
   quaternion p(0, *this);
 
   axis.normalize();
-
-  quaternion q(angle, axis);
+  quaternion q(angleRad, axis);
   q.convertToUnitNorm();
 
   quaternion qInverse = q.inverse();
