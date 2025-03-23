@@ -12,11 +12,11 @@ namespace math {
             ~mat3x3();
             mat3x3& operator=(const mat3x3&);
 
-            void add(const mat3x3&);
-            void subtract(const mat3x3&);
-            void multiply(const mat3x3&);
-            void multiply(float);
-            void divide(float);
+            mat3x3 add(const mat3x3&);
+            mat3x3 subtract(const mat3x3&);
+            mat3x3 multiply(const mat3x3&);
+            mat3x3 multiply(float);
+            mat3x3 divide(float);
 
             static mat3x3 createIdentity();
             

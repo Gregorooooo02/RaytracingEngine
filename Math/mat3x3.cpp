@@ -36,23 +36,28 @@ mat3x3& mat3x3::operator=(const mat3x3& m) {
     return *this;
 }
 
-void mat3x3::add(const mat3x3& m) {
+mat3x3 mat3x3::add(const mat3x3& m) {
+    mat3x3 result = *this;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            data[i][j] += m.data[i][j];
+            result.data[i][j] += m.data[i][j];
         }
     }
+    return result;
 }
 
-void mat3x3::subtract(const mat3x3& m) {
+mat3x3 mat3x3::subtract(const mat3x3& m) {
+    mat3x3 result = *this;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            data[i][j] -= m.data[i][j];
+            result.data[i][j] -= m.data[i][j];
         }
     }
+    return result;
 }
 
-void mat3x3::multiply(const mat3x3& m) {
+mat3x3 mat3x3::multiply(const mat3x3& m) {
+    mat3x3 result = *this;
     float temp[3][3] = {
         {0, 0, 0},
         {0, 0, 0},
@@ -61,31 +66,36 @@ void mat3x3::multiply(const mat3x3& m) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             for (int k = 0; k < 3; k++) {
-                temp[i][j] += data[i][k] * m.data[k][j];
+                temp[i][j] += result.data[i][k] * m.data[k][j];
             }
         }
     }
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            data[i][j] = temp[i][j];
+            result.data[i][j] = temp[i][j];
         }
     }
+    return result;
 }
 
-void mat3x3::multiply(float scalar) {
+mat3x3 mat3x3::multiply(float scalar) {
+    mat3x3 result = *this;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            data[i][j] *= scalar;
+            result.data[i][j] *= scalar;
         }
     }
+    return result;
 }
 
-void mat3x3::divide(float scalar) {
+mat3x3 mat3x3::divide(float scalar) {
+    mat3x3 result = *this;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            data[i][j] /= scalar;
+            result.data[i][j] /= scalar;
         }
     }
+    return result;
 }
 
 mat3x3 mat3x3::createIdentity() {
