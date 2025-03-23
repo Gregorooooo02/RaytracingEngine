@@ -25,7 +25,11 @@ vec3::vec3(const vec3 &vec) {
 }
 
 vec3& vec3::operator=(const vec3 &vec) {
+  this->x = vec.x;
+  this->y = vec.y;
+  this->z = vec.z;
 
+  return *this;
 }
 
 vec3::~vec3() {}
@@ -71,20 +75,22 @@ float vec3::len() {
                           std::pow(this->z, 2));
 }
 
-vec3& vec3::normalize() {
-  float length = this->len();
+vec3 vec3::normalize() {
+  vec3 result = *this;
+  float length = result.len();
 
   if (length == 0.0f) {
     throw std::invalid_argument("cant divide by 0");
   }
 
-  this->divide(length);
+  result.divide(length);
 
-  return *this;
+  return result;
 }
 
 float vec3::dotProduct(vec3 &vec) {
-  return this->x * vec.x + this->y * vec.y + this->z * vec.z;
+  vec3 result = *this;
+  return result.x * vec.x + result.y * vec.y + result.z * vec.z;
 }
 
 vec3 vec3::crossProduct(vec3 &vec) {
@@ -107,4 +113,28 @@ vec3 vec3::rotate(float angle, vec3& axis) {
   quaternion rotatedVector = q.multiply(p).multiply(qInverse);
 
   return rotatedVector.v;
+}
+
+// Operators
+vec3 math::operator+(const vec3 &v1, const vec3 &v2) {
+  return {v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
+}
+
+vec3 math::operator-(const vec3 &v1, const vec3 &v2) {
+  return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
+}
+
+vec3 math::operator*(const vec3 &v, float scalar) {
+  return {v.x * scalar, v.y * scalar, v.z * scalar};
+}
+
+vec3 math::operator*(float scalar, const vec3 &v) {
+  return {v.x * scalar, v.y * scalar, v.z * scalar};
+}
+
+vec3 math::operator/(const vec3 &v, float scalar) {
+  if (scalar == 0.0f) {
+    throw std::invalid_argument("cant divide by 0");
+  }
+  return {v.x / scalar, v.y / scalar, v.z / scalar};
 }

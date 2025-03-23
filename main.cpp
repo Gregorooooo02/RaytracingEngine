@@ -52,7 +52,6 @@ int main() {
   math::ray r1(origin, dir1);
 
   math::vec3 ress = origin.crossProduct(dir1);
-  std::cout << ress.x << " " << ress.y << " " << ress.z << std::endl;
 
   // Ex 9 - define a ray with origin in (0, 0, -20) and direction parallel to the Y axis
   math::vec3 dir2(0, 1, 0);
@@ -105,6 +104,15 @@ int main() {
   std::cout << "T1 - przypadek 2:" << std::endl;
   bool hit6 = t1.hit(r5);
   std::cout << "Hit: " << hit6 << std::endl;
+
+  // Ex 15 - przypadek 3
+  math::vec3 p3_o(0, 1, -1);
+  math::vec3 p3_d(0, 0, 1);
+  math::ray r6(p3_o, p3_d);
+
+  std::cout << "T1 - przypadek 3:" << std::endl;
+  bool hit7 = t1.hit(r6);
+  std::cout << "Hit: " << hit7 << std::endl;
 
   return 0;
 }
