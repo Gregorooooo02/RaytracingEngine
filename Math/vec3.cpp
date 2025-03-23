@@ -24,6 +24,10 @@ vec3::vec3(const vec3 &vec) {
   this->z = vec.z;
 }
 
+vec3& vec3::operator=(const vec3 &vec) {
+
+}
+
 vec3::~vec3() {}
 
 vec3& vec3::add(vec3 &vec) {

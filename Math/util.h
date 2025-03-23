@@ -8,10 +8,15 @@ namespace math {
     }
 
     inline float quadDiscr(float a, float b, float c) {
-      return b * b - 4 * a * c;
+      return b * b - a * c;
     }
 
     inline float root(float b, float discriminant, float a) {
-      return ((b * - 1) + std::sqrt(discriminant)) / a;
+      if (discriminant > 0) {
+        return (-b + std::sqrt(discriminant)) / a;
+      }
+      else {
+        return (-b - std::sqrt(-discriminant)) / a;
+      }
     }
 }

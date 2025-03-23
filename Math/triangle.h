@@ -1,17 +1,16 @@
 #pragma once
 
-#include "primitive.h"
+#include "ray.h"
 #include "vec3.h"
 
 namespace math {
-    class triangle : primitive {
+    class triangle {
         public:
             vec3 vertices[3];
-            vec3 normals[3];
+            vec3 normal;
 
             triangle();
             triangle(vec3&, vec3&, vec3&);
-            triangle(vec3&, vec3&, vec3&, vec3&, vec3&, vec3&);
             ~triangle();
             triangle(const triangle&);
 

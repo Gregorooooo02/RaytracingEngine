@@ -1,5 +1,7 @@
 #include "vec3.h"
 #include "sphere.h"
+#include "plane.h"
+#include "triangle.h"
 #include "ray.h"
 
 #include <iostream>
@@ -46,18 +48,63 @@ int main() {
 
   // Ex 8 - define a ray with origin in (0, 0, -20) and direction (0, 0, 0);
   math::vec3 origin(0, 0, -20);
-  math::ray r1(origin, center);
+  math::vec3 dir1 = center.substract(origin).normalize();
+  math::ray r1(origin, dir1);
+
+  math::vec3 ress = origin.crossProduct(dir1);
+  std::cout << ress.x << " " << ress.y << " " << ress.z << std::endl;
 
   // Ex 9 - define a ray with origin in (0, 0, -20) and direction parallel to the Y axis
-  math::vec3 direction(0, 1, 0);
-  math::ray r2(origin, direction);
+  math::vec3 dir2(0, 1, 0);
+  math::ray r2(origin, dir2);
 
-  // Ex 10 - check if the r1 and r2 rays hit the s1 sphere
-  bool hit1 = s1.hit(r1);
-  bool hit2 = s1.hit(r2);
+  // Ex 10 & 11 - check if the r1 and r2 rays hit the s1 sphere
+  std::cout << "R1:" << std::endl;
+  bool hit1 = s1.hit(r1, 0, 10.00001f);
+  std::cout << "R2:" << std::endl;
+  bool hit2 = s1.hit(r2, 0, 1000000);
 
-  std::cout << "Czy r1 trafia w s1: " << hit1 << std::endl;
-  std::cout << "Czy r2 trafia w s1: " << hit2 << std::endl;
+  // Ex 12 - define a ray that has only one hit point with the s1 sphere
+  math::vec3 dir3(0, 0, 1);
+  math::vec3 origin2(0, 10, -20);
+  math::ray r3(origin2, dir3);
+
+  std::cout << "R3:" << std::endl;
+  bool hit3 = s1.hit(r3, 0, 20.001f);
+
+  // Ex 13 - define a plane that intersects with a point (0, 0, 0) and has a normal vector 45 degrees to the axis Y and Z
+  math::vec3 point(0, 0, 0);
+  float angle_p = static_cast<float>(cos(45 * M_PI / 180));
+  math::vec3 normal(0, angle_p, angle_p);
+  math::plane p1(normal, point);
+
+  // Ex 14 - define a ray that hits the plane from ex 13
+  std::cout << "P1:" << std::endl;
+  bool hit4 = p1.hit(r2);
+
+  // Ex 15 - przypadek 1
+  math::vec3 a(0, 0, 0);
+  math::vec3 b(1, 0, 0);
+  math::vec3 c(0, 1, 0);
+
+  math::triangle t1(a, b, c);
+
+  math::vec3 p1_o(-1.0f, 0.5f, 0.0f);
+  math::vec3 p1_d(1.0f, 0.0f, 0.0f);
+  math::ray r4(p1_o, p1_d);
+
+  std::cout << "T1 - przypadek 1:" << std::endl;
+  bool hit5 = t1.hit(r4);
+  std::cout << "Hit: " << hit5 << std::endl;
+
+  // Ex 15 - przypadek 2
+  math::vec3 p2_o(2, -1, 0);
+  math::vec3 p2_d(0, 1, 0);
+  math::ray r5(p2_o, p2_d);
+
+  std::cout << "T1 - przypadek 2:" << std::endl;
+  bool hit6 = t1.hit(r5);
+  std::cout << "Hit: " << hit6 << std::endl;
 
   return 0;
 }

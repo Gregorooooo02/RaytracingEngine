@@ -9,6 +9,6 @@ namespace math {
       vec3 d;
       ray();
       ray(vec3 &o, vec3 &a);
-      vec3 hit_at(float t);
+      vec3 point_at(float t);
   };
 }

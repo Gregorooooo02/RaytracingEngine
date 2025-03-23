@@ -1,5 +1,7 @@
 #include "plane.h"
 
+#include <iostream>
+
 using namespace math;
 
 plane::plane() {
@@ -62,6 +64,10 @@ bool plane::hit(ray& ray) {
     }
 
     float t = -(this->normal.dotProduct(ray.o) + this->d) / denominator;
+
+    // Tymczasowe
+    vec3 hitPoint = ray.point_at(t);
+    std::cout << "Hit point: " << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
 
     return t >= 0;
 }

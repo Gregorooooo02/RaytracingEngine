@@ -49,10 +49,12 @@ build/
 *.app
 
 # Build files
+.idea/
 CMakeCache.txt
 CMakeFiles/
 Makefile
 cmake_install.cmake
 compile_commands.json
-
+bin/
+cmake-build-debug/
 token.txt
