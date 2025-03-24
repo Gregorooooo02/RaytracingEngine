@@ -183,7 +183,9 @@ int main() {
 
     // Ex 7 - implement the quaternion to rotate by 30 degrees around the X axis; check its length, inverse
     math::vec3 v8(1, 0, 0);
-    math::quaternion q1(30, v8);
+    float angle2 = 30;
+    float angleRad = angle2 * M_PI / 180.0f;
+    math::quaternion q1(angleRad, v8);
     q1.convertToUnitNorm();
     std::cout << "Długość kwaternionu q1: " << q1.norm() << std::endl;
     math::quaternion q1i = q1.inverse();
