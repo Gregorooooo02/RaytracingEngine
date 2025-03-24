@@ -12,6 +12,15 @@
 
 void printMatrix(math::mat3x3& m);
 
+void printMatrix_4x4(math::mat4x4 m) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            std::cout << m.data[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
     // Ex 1 & 2
     math::vec3 v1(1, 2, 3);
@@ -168,7 +177,93 @@ int main() {
                     5, 6, 0);
     m9.inverse();
     printMatrix(m9);
-    std::cout << std::endl;
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Macierz 4x4:\n";
+
+    math::mat4x4 m4_1(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    math::mat4x4 m4_2(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    printMatrix_4x4(m4_1);
+
+
+    std::cout << "\n";
+
+    std::cout << "Dodawanie macierzy: \n";
+    m4_1.add(m4_2);
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Odejmowanie macierzy: \n";
+    m4_1.subtract(m4_2);
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Mnozenie macierzy przez macierz: \n";
+    m4_1.multiply(m4_2);
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Mnozenie macierzy przez skalar: \n";
+    m4_1.multiply(2.0f);
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Dzielenie macierzy: \n";
+    m4_1.divide(2.0f);
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Macierz jednostkowa: \n";
+    math::mat4x4 identity = m4_1.createIdentity();
+    printMatrix_4x4(identity);
+    std::cout << "\n\n";
+
+    std::cout << "Macierz transponowana: \n";
+    m4_1.transpose();
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+    std::cout << "\n\n";
+
+    std::cout << "Translacja macierzy: \n";
+    math::mat4x4 translated = m4_1.translate(math::vec3(4, 2, 0));
+    printMatrix_4x4(translated);
+    std::cout << "\n\n";
+
+    std::cout << "Skalowanie macierzy o wektor: \n";
+    math::mat4x4 scaled = m4_1.scale(math::vec3(4, 2, 0));
+    printMatrix_4x4(scaled);
+    std::cout << "\n\n";
+
+    std::cout << "Skalowanie macierzy o skalar: \n";
+    scaled = m4_1.scale(8);
+    printMatrix_4x4(scaled);
+    std::cout << "\n\n";
+
+    std::cout << "Obrocenie macierzy wzgledem osi o kat: \n";
+    math::vec3 v(1, 0 ,0);
+    math::mat4x4 rotated = m4_1.rotate(45, v);
+    printMatrix_4x4(rotated);
+    std::cout << "\n\n";
+
+    std::cout << "Obrocenie macierzy wzgledem osi X: \n";
+    rotated = m4_1.rotateX(45);
+    printMatrix_4x4(rotated);
+    std::cout << "\n\n";
+
+    std::cout << "Obrocenie macierzy wzgledem osi Y: \n";
+    rotated = m4_1.rotateY(45);
+    printMatrix_4x4(rotated);
+    std::cout << "\n\n";
+
+    std::cout << "Obrocenie macierzy wzgledem osi Z: \n";
+    rotated = m4_1.rotateZ(45);
+    printMatrix_4x4(rotated);
+    std::cout << "\n\n";
 
     // Ex 3 - Rotate the vector (1, 0, 0, 1) by 90 degrees around the Y axis
 

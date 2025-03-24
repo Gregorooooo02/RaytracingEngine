@@ -28,14 +28,14 @@ namespace math {
             void transpose();
 
             // Transformations
-            void translate(const vec3&);
-            void scale(const vec3&);
-            void scale(const float);
-            void rotate(float, vec3&);
+            mat4x4 translate(const vec3&);
+            mat4x4 scale(const vec3&);
+            mat4x4 scale(const float);
+            mat4x4 rotate(float, vec3&);
             // Additional rotation methods
-            void rotateX(const float);
-            void rotateY(const float);
-            void rotateZ(const float);
+            mat4x4 rotateX(const float);
+            mat4x4 rotateY(const float);
+            mat4x4 rotateZ(const float);
         private:
             float determinant(mat4x4&);
             float determinant3x3(float[3][3]);

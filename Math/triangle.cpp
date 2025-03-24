@@ -55,6 +55,7 @@ bool triangle::hit(ray& ray) {
                 float t_temp = (C1 * B2 - C2 * B1) / det;
                 float s_temp = (A1 * C2 - A2 * C1) / det;
                 if (t_temp >= 0 && s_temp >= 0 && s_temp <= 1) {
+
                     if (t_temp < t_candidate) {
                         t_candidate = t_temp;
                         found = true;
