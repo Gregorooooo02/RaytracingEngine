@@ -1,6 +1,7 @@
 #include "vec3.h"
 #include "mat3x3.h"
 #include "mat4x4.h"
+#include "quaternion.h"
 #include "sphere.h"
 #include "plane.h"
 #include "triangle.h"
@@ -179,6 +180,32 @@ int main() {
     math::vec3 axis(1, 0, 1);
     math::vec3 v7r = v7.rotate(90, axis);
     std::cout << "Wektor v7 po rotacji o 90 stopni wokół osi (1, 0, 1): " << v7r.x << ", " << v7r.y << ", " << v7r.z << std::endl;
+
+    // Ex 7 - implement the quaternion to rotate by 30 degrees around the X axis; check its length, inverse
+    math::vec3 v8(1, 0, 0);
+    math::quaternion q1(30, v8);
+    q1.convertToUnitNorm();
+    std::cout << "Długość kwaternionu q1: " << q1.norm() << std::endl;
+    math::quaternion q1i = q1.inverse();
+    std::cout << "Kwaternion odwrotny do q1: " << q1i.s << ", " << q1i.v.x << ", " << q1i.v.y << ", " << q1i.v.z << std::endl;
+
+    // Ex 8
+    math::vec3 av(0.06f, -0.257f, -0.935f);
+    math::quaternion q2(0.233f, av);
+    math::vec3 bv(0.286f, 0.374f, 0.459f);
+    math::quaternion q3(-0.752f, bv);
+
+    // Dot product of q2 and q3
+    float dot = q2.s * q3.s + q2.v.dotProduct(q3.v);
+    std::cout << "Iloczyn skalarny a i b: " << dot << std::endl;
+
+    // Quaternion multiplication
+    math::quaternion q4 = q2.multiply(q3);
+    std::cout << "Iloczyn a i b: " << q4.s << ", " << q4.v.x << ", " << q4.v.y << ", " << q4.v.z << std::endl;
+
+    // Subtract q3 from q2
+    math::quaternion q5 = q2.substract(q3);
+    std::cout << "Odejmowanie a i b: " << q5.s << ", " << q5.v.x << ", " << q5.v.y << ", " << q5.v.z << std::endl;
 
     return 0;
 }
