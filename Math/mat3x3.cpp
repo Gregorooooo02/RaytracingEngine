@@ -57,22 +57,13 @@ mat3x3 mat3x3::subtract(const mat3x3& m) {
 }
 
 mat3x3 mat3x3::multiply(const mat3x3& m) {
-    mat3x3 result = *this;
-    float temp[3][3] = {
-        {0, 0, 0},
-        {0, 0, 0},
-        {0, 0, 0}
-    };
+    mat3x3 result;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
+            result.data[i][j] = 0;
             for (int k = 0; k < 3; k++) {
-                temp[i][j] += result.data[i][k] * m.data[k][j];
+                result.data[i][j] += this->data[i][k] * m.data[k][j];
             }
-        }
-    }
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            result.data[i][j] = temp[i][j];
         }
     }
     return result;

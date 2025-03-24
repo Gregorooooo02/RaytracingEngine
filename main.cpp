@@ -173,6 +173,20 @@ int main() {
     // Ex 3 - Rotate the vector (1, 0, 0, 1) by 90 degrees around the Y axis
 
     // Ex 4 - Prove the lack of commutativity of matrix multiplication using an implemented example
+    math::mat3x3 m10(1, 2, 3,
+                    4, 5, 6,
+                    7, 8, 9);
+    math::mat3x3 m11(2, 0, 3,
+                    4, 7, 6,
+                    2, 1, 9);
+
+    std::cout << "Mnożenie macierzy m10 i m11:" << std::endl;
+    math::mat3x3 m12 = m10.multiply(m11);
+    printMatrix(m12);
+
+    std::cout << "Mnożenie macierzy m11 i m10:" << std::endl;
+    math::mat3x3 m13 = m11.multiply(m10);
+    printMatrix(m13);
 
     // Ex 5 - implement the quaternion class with its methods - DONE
     // Ex 6 - rotate the vector (3, 1, 3) around the vector (1, 0 ,1) by 90 degrees
