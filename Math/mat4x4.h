@@ -24,6 +24,7 @@ namespace math {
 
             static mat4x4 createIdentity();
 
+            void setMatrixAsInverse(mat4x4& m);
             void inverse();
             void transpose();
 

@@ -102,40 +102,51 @@ mat4x4 mat4x4::createIdentity() {
     return identity;
 }
 
-void mat4x4::inverse() {
-    float det = determinant(*this);
+// TODO: DO POPRAWIENIA
+void mat4x4::setMatrixAsInverse(mat4x4& m) {
+    float t1 = m.data[0][0] * m.data[1][0];
+    float t2 = m.data[0][0] * m.data[1][2];
+    float t3 = m.data[0][3] * m.data[0][1];
+    float t4 = m.data[1][1] * m.data[0][1];
+    float t5 = m.data[0][3] * m.data[0][2];
+    float t6 = m.data[1][1] * m.data[0][2];
+
+    float det = (t1 * m.data[2][0] - t2 * m.data[1][1] - t3 * m.data[2][0] - t4 * m.data[1][1] + t5 * m.data[1][3] - t6 * m.data[1][0]);
+
     if (det == 0) {
         return;
     }
-    
-    float temp[4][4];
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            float minor[3][3];
-            int mi = 0;
-            for (int m = 0; m < 4; m++) {
-                if (m == i) continue;
-                int mj = 0;
-                for (int n = 0; n < 4; n++) {
-                    if (n == j) continue;
-                    minor[m* i][mj] = data[m][n];
-                    mj++;
-                }
-                mi++;
-            }
-            float minor_det = determinant3x3(minor);
-            float cofactor = ((i + j) % 2 == 0 ? 1.0f : -1.0f) * minor_det;
-            
-            temp[j][i] = cofactor / det;
-        }
-    }
+    float invd = 1.0f / det;
 
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            data[i][j] = temp[i][j];
-        }
-    }
+    float m0 = (m.data[1][1] * m.data[2][2] - m.data[1][3] * m.data[1][1]) * invd;
+    float m3 = -(m.data[0][3] * m.data[2][0] - m.data[1][2] * m.data[1][1]) * invd;
+    float m6 = (m.data[0][3] * m.data[1][3] - m.data[1][2] * m.data[1][0]) * invd;
+
+    float m1 = -(m.data[0][1] * m.data[2][0] - m.data[1][3] * m.data[0][2]) * invd;
+    float m4 = (m.data[0][0] * m.data[2][0] - t6) * invd;
+    float m7 = (t2 - t4) * invd;
+
+    float m2 = (m.data[0][1] * m.data[1][1] - m.data[1][0] * m.data[0][2]) * invd;
+    float m5 = -(m.data[0][0] * m.data[1][1] - t5) * invd;
+    float m8 = (t1 - t3) * invd;
+
+    data[0][0] = m0;
+    data[0][1] = m1;
+    data[0][2] = m2;
+
+    data[1][0] = m3;
+    data[1][1] = m4;
+    data[1][2] = m5;
+
+    data[2][0] = m6;
+    data[2][1] = m7;
+    data[2][2] = m8;
+}
+
+// TODO: DO POPRAWIENIA
+void mat4x4::inverse() {
+    setMatrixAsInverse(*this);
 }
 
 void mat4x4::transpose() {

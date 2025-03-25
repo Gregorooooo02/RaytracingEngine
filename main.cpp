@@ -11,15 +11,7 @@
 #include <cmath>
 
 void printMatrix(math::mat3x3& m);
-
-void printMatrix_4x4(math::mat4x4 m) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            std::cout << m.data[i][j] << "\t";
-        }
-        std::cout << std::endl;
-    }
-}
+void printMatrix_4x4(math::mat4x4 m);
 
 int main() {
     // Ex 1 & 2
@@ -229,6 +221,12 @@ int main() {
     m4_1 = math::mat4x4(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
     std::cout << "\n\n";
 
+    std::cout << "Macierz odwrotna: \n";
+    m4_1.inverse();
+    printMatrix_4x4(m4_1);
+    m4_1 = math::mat4x4(1, 2, 7, 4, 5, 2, 7, 8, 9, 1, 11, 12, 3, 14, 6, 0);
+    std::cout << "\n\n";
+
     std::cout << "Translacja macierzy: \n";
     math::mat4x4 translated = m4_1.translate(math::vec3(4, 2, 0));
     printMatrix_4x4(translated);
@@ -266,6 +264,16 @@ int main() {
     std::cout << "\n\n";
 
     // Ex 3 - Rotate the vector (1, 0, 0, 1) by 90 degrees around the Y axis
+    math::mat4x4 mm(1, 0, 0, 1,
+                    0, 1, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1);
+
+    math::mat4x4 mm2 = mm.rotateY(90);
+
+    std::cout << "Obrót wektora (1, 0, 0, 1) o 90 stopni wokół osi Y:" << std::endl;
+    printMatrix_4x4(mm2);
+
 
     // Ex 4 - Prove the lack of commutativity of matrix multiplication using an implemented example
     math::mat3x3 m10(1, 2, 3,
@@ -324,6 +332,15 @@ int main() {
 void printMatrix(math::mat3x3& m) {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
+            std::cout << m.data[i][j] << "\t";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void printMatrix_4x4(math::mat4x4 m) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
             std::cout << m.data[i][j] << "\t";
         }
         std::cout << std::endl;
