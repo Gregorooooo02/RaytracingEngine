@@ -9,7 +9,14 @@ file(GLOB SOURCES
     main.cpp
     Math/*.cpp
     Utils/*.cpp
+    Camera/*.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC Math Utils)
+add_library(Camera STATIC
+    Camera/Camera.cpp
+    Camera/Orthographic.cpp
+    Camera/Perspective.cpp
+)
+
+target_include_directories(${PROJECT_NAME} PUBLIC Math Utils Camera)

@@ -10,6 +10,7 @@ namespace math {
             vec3 normal;
 
             triangle();
+            triangle(vec3, vec3, vec3);
             triangle(vec3&, vec3&, vec3&);
             ~triangle();
             triangle(const triangle&);

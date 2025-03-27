@@ -39,27 +39,27 @@ bool sphere::hit(ray &ray, float tMin, float tMax) {
   float discriminant = math::quadDiscr(a, b, c);
 
   if (discriminant < 0) {
-    std::cout << "No hit" << std::endl;
+    // std::cout << "No hit" << std::endl;
     return false;
   }
 
   float x1 = math::root(b, -discriminant, a);
   float x2 = math::root(b, discriminant, a);
 
-  // Tymczasowe
-  if (discriminant == 0) {
-    std::cout << "Hit at t = " << x1 << std::endl;
-    vec3 hitPoint = ray.point_at(x1);
-
-    std::cout << "Hit point: " << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
-  } else {
-    std::cout << "Hit at t = " << x1 << " and t = " << x2 << std::endl;
-    vec3 hitPoint1 = ray.point_at(x1);
-    vec3 hitPoint2 = ray.point_at(x2);
-
-    std::cout << "Hit point 1: " << hitPoint1.x << ", " << hitPoint1.y << ", " << hitPoint1.z << std::endl;
-    std::cout << "Hit point 2: " << hitPoint2.x << ", " << hitPoint2.y << ", " << hitPoint2.z << std::endl;
-  }
+  // // Tymczasowe
+  // if (discriminant == 0) {
+  //   std::cout << "Hit at t = " << x1 << std::endl;
+  //   vec3 hitPoint = ray.point_at(x1);
+  //
+  //   std::cout << "Hit point: " << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
+  // } else {
+  //   std::cout << "Hit at t = " << x1 << " and t = " << x2 << std::endl;
+  //   vec3 hitPoint1 = ray.point_at(x1);
+  //   vec3 hitPoint2 = ray.point_at(x2);
+  //
+  //   std::cout << "Hit point 1: " << hitPoint1.x << ", " << hitPoint1.y << ", " << hitPoint1.z << std::endl;
+  //   std::cout << "Hit point 2: " << hitPoint2.x << ", " << hitPoint2.y << ", " << hitPoint2.z << std::endl;
+  // }
 
   return (x1 > tMin && x1 < tMax) || (x2 > tMin && x2 < tMax);
 }

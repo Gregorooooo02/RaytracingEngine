@@ -12,13 +12,21 @@ triangle::triangle() {
     this->normal = vec3();
 }
 
+triangle::triangle(vec3 v1, vec3 v2, vec3 v3) {
+    this->vertices[0] = v1;
+    this->vertices[1] = v2;
+    this->vertices[2] = v3;
+
+    vec3 temp = v3.substract(v1);
+    this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
+}
+
 triangle::triangle(vec3& v1, vec3& v2, vec3& v3) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
 
     vec3 temp = v3.substract(v1);
-
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
 }
 
