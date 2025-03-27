@@ -9,11 +9,11 @@ namespace cam {
   class Scene {
     private:
       Camera* camera; 
-      std::vector<math::primitive> objects;
-      LightIntensity backgroundColor;
+      std::vector<math::primitive*> objects;
+      LightIntensity* backgroundColor;
     public:
       Scene();
-      Scene(Camera* camera, std::vector<math::primitive> objects, LightIntensity backgroundColor);
+      Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensity* backgroundColor);
       ~Scene();
       Image renderScene(int width, int height);
   };
