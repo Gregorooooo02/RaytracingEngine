@@ -1,6 +1,5 @@
 #include "triangle.h"
-#include "plane.h"
-
+#include "LightIntensity.h"
 #include <cmath>
 
 using namespace math;
@@ -10,21 +9,24 @@ triangle::triangle() {
         this->vertices[i] = vec3();
     }
     this->normal = vec3();
+    this->color = cam::LightIntensity();
 }
 
-triangle::triangle(vec3 v1, vec3 v2, vec3 v3) {
+triangle::triangle(vec3 v1, vec3 v2, vec3 v3, cam::LightIntensity color) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
+    this->color = color;
 
     vec3 temp = v3.substract(v1);
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
 }
 
-triangle::triangle(vec3& v1, vec3& v2, vec3& v3) {
+triangle::triangle(vec3& v1, vec3& v2, vec3& v3, cam::LightIntensity color) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
+    this->color = color;
 
     vec3 temp = v3.substract(v1);
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
@@ -37,6 +39,7 @@ triangle::triangle(const triangle& t) {
         this->vertices[i] = t.vertices[i];
     }
     this->normal = t.normal;
+    this->color = t.color;
 }
 
 bool triangle::hit(ray& ray) {

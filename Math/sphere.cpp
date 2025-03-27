@@ -1,19 +1,19 @@
 #include "sphere.h"
+#include "LightIntensity.h"
 #include "ray.h"
 #include "util.h"
-
 #include <limits>
 #include <stdexcept>
-#include <iostream>
 
 using namespace math;
 
 sphere::sphere() {
   this->center = vec3();
   this->radius = 0.0f;
+  this->color = cam::LightIntensity();
 }
 
-sphere::sphere(vec3 &center, float radius) {
+sphere::sphere(vec3 &center, float radius, cam::LightIntensity color) {
   this->center = center;
 
   if (radius < 0) {
@@ -21,6 +21,7 @@ sphere::sphere(vec3 &center, float radius) {
   }
 
   this->radius = radius;
+  this->color = color;
 }
 
 sphere::~sphere() {}
@@ -28,6 +29,7 @@ sphere::~sphere() {}
 sphere::sphere(const sphere &sphere) {
   this->center = sphere.center;
   this->radius = sphere.radius;
+  this->color = sphere.color;
 }
 
 bool sphere::hit(ray &ray) {
