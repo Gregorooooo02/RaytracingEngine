@@ -13,10 +13,4 @@ file(GLOB SOURCES
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-add_library(Camera STATIC
-    Camera/Camera.cpp
-    Camera/Orthographic.cpp
-    Camera/Perspective.cpp
-)
-
 target_include_directories(${PROJECT_NAME} PUBLIC Math Utils Camera)

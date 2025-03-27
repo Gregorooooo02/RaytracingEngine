@@ -1,6 +1,7 @@
 #include "Image.h"
 #include "LightIntensity.h"
 #include "Orthographic.h"
+#include "Perspective.h"
 
 #include "sphere.h"
 #include "vec3.h"
@@ -8,15 +9,16 @@
 #include <iostream>
 
 int main() {
-    int img_width = 800;
+    int img_width = 1200;
     int img_height = 800;
 
-    cam::Orthographic camera(
-        math::vec3(0, 0, 1), // Camera position
-        math::vec3(-0.25, 0, 0), // Target position
-        math::vec3(0, 1, 0), // Up vector
-        0.1f,               // Near plane
-        100.0f              // Far plane
+    cam::Perspective camera(
+        math::vec3(0, 0, 1),        // Camera position
+        math::vec3(0, 0, 0),        // Target position
+        math::vec3(0, 1, 0),        // Up vector
+        0.1f,                             // Near plane
+        100.0f,                           // Far plane
+        110.0f                             // Field of view
     );
 
     cam::LightIntensity sphere_color1(1.0, 0.0, 0.0);
