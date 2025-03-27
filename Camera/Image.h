@@ -1,5 +1,6 @@
 #pragma once
 #include "LightIntensity.h"
+#include <string>
 #include <vector>
 
 namespace cam {

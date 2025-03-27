@@ -1,45 +1,35 @@
-#include "Image.h"
+#include "Camera/Scene.h"
 #include "LightIntensity.h"
-#include "Orthographic.h"
-
+#include "Perspective.h"
 #include "sphere.h"
 #include "vec3.h"
-
-#include <iostream>
+#include <vector>
 
 int main() {
-    int img_width = 800;
-    int img_height = 800;
-
-    cam::Orthographic camera(
-        math::vec3(0, 0, 1), // Camera position
-        math::vec3(-0.25, 0, 0), // Target position
-        math::vec3(0, 1, 0), // Up vector
-        0.1f,               // Near plane
-        100.0f              // Far plane
+    cam::Perspective camera(
+        math::vec3(0, 0, 1),        // Camera position
+        math::vec3(0, 0, 0),        // Target position
+        math::vec3(0, 1, 0),        // Up vector
+        0.1f,                             // Near plane
+        100.0f,                           // Far plane
+        110.0f                             // Field of view
     );
 
     cam::LightIntensity sphere_color1(1.0, 0.0, 0.0);
     cam::LightIntensity background_color(0.0, 0.0, 0.0);
 
-    math::vec3 sphere_center(0, 0, 0);
-    math::sphere sphere(sphere_center, .8f);
+    math::vec3 s1_center(0, 0, 0);
+    math::sphere s1(s1_center, .8f, cam::LightIntensity(0, 1, 0));
+    math::vec3 s2_center(0.75, 0.75, 0);
+    math::sphere s2(s2_center, .6f, cam::LightIntensity(0, 0, 1));
 
-    cam::Image img(img_width, img_height);
+    std::vector<math::primitive*> objects;
+    objects.push_back(&s2);
+    objects.push_back(&s1);
+    
+    cam::Scene scene(&camera, objects, new cam::LightIntensity(1, 0, 0));
 
-    for (int y = 0; y < img_height; y++) {
-        for (int x = 0; x < img_width; x++) {
-            math::ray ray = camera.generateRay(x, y, img_width, img_height);
-            if (sphere.hit(ray, 0.0f, 100.0f)) {
-                img.setPixel(x, y, sphere_color1);
-            } else {
-                img.setPixel(x, y, background_color);
-            }
-        }
-    }
+    scene.renderScene(800, 800);
 
-    img.save("output.ppm");
-
-    std::cout << "Image saved as output.ppm" << std::endl;
     return 0;
 }

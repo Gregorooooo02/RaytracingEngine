@@ -1,4 +1,5 @@
 #include "plane.h"
+#include "LightIntensity.h"
 
 #include <iostream>
 
@@ -10,34 +11,38 @@ plane::plane() {
     this->c = 0.0f;
     this->d = 0.0f;
     this->normal = vec3();
+    this->color = cam::LightIntensity();
 }
 
-plane::plane(float a, float b, float c, float d) {
+plane::plane(float a, float b, float c, float d, cam::LightIntensity color) {
     this->a = a;
     this->b = b;
     this->c = c;
     this->d = d;
     this->normal = vec3(a, b, c);
+    this->color = color;
 }
 
-plane::plane(const vec3& normal, float d) {
+plane::plane(const vec3& normal, float d, cam::LightIntensity color) {
     this->a = normal.x;
     this->b = normal.y;
     this->c = normal.z;
     this->d = d;
     this->normal = normal;
+    this->color = color;
 }
 
-plane::plane(vec3& normal, vec3& point) {
+plane::plane(vec3& normal, vec3& point, cam::LightIntensity color) {
     this->a = normal.x;
     this->b = normal.y;
     this->c = normal.z;
     this->d = -normal.dotProduct(point);
     this->normal = normal;
     this->point = point;
+    this->color = color;
 }
 
-plane::plane(vec3& p1, vec3& p2, vec3& p3) {
+plane::plane(vec3& p1, vec3& p2, vec3& p3, cam::LightIntensity color) {
     vec3 temp = p3.substract(p1);
     this->normal = (p2.substract(p1)).crossProduct(temp).normalize();
     this->a = this->normal.x;
@@ -45,6 +50,7 @@ plane::plane(vec3& p1, vec3& p2, vec3& p3) {
     this->c = this->normal.z;
     this->d = -this->normal.dotProduct(p1);
     this->point = p1;
+    this->color = color;
 }
 
 plane::plane(const plane& plane) {
@@ -54,6 +60,7 @@ plane::plane(const plane& plane) {
     this->d = plane.d;
     this->normal = plane.normal;
     this->point = plane.point;
+    this->color = color;
 }
 
 plane::~plane() {}
