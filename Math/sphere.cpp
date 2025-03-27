@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "util.h"
 
+#include <limits>
 #include <stdexcept>
 #include <iostream>
 
@@ -27,6 +28,10 @@ sphere::~sphere() {}
 sphere::sphere(const sphere &sphere) {
   this->center = sphere.center;
   this->radius = sphere.radius;
+}
+
+bool sphere::hit(ray &ray) {
+  return this->hit(ray, std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
 }
 
 bool sphere::hit(ray &ray, float tMin, float tMax) {

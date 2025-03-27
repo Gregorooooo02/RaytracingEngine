@@ -1,10 +1,10 @@
 #pragma once
-
+#include "primitive.h"
 #include "vec3.h"
 #include "ray.h"
 
 namespace math {
-    class plane {
+    class plane : public primitive {
         public:
             plane();
             plane(float, float, float, float);
@@ -13,9 +13,7 @@ namespace math {
             plane(vec3&, vec3&, vec3&);
             plane(const plane&);
             ~plane();
-
             bool hit(ray&);
-
         private:
             float a, b, c, d;
             vec3 normal;
