@@ -38,7 +38,8 @@ plane::plane(vec3& normal, vec3& point) {
 }
 
 plane::plane(vec3& p1, vec3& p2, vec3& p3) {
-    this->normal = (p2.substract(p1)).crossProduct(p3.substract(p1)).normalize();
+    vec3 temp = p3.substract(p1);
+    this->normal = (p2.substract(p1)).crossProduct(temp).normalize();
     this->a = this->normal.x;
     this->b = this->normal.y;
     this->c = this->normal.z;

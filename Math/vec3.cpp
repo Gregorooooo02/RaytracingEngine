@@ -34,40 +34,44 @@ vec3& vec3::operator=(const vec3 &vec) {
 
 vec3::~vec3() {}
 
-vec3& vec3::add(vec3 &vec) {
-  this->x += vec.x;
-  this->y += vec.y;
-  this->z += vec.z;
+vec3 vec3::add(const vec3 &vec) const {
+  vec3 result = *this;
+  result.x += vec.x;
+  result.y += vec.y;
+  result.z += vec.z;
 
-  return *this;
+  return result;
 }
 
-vec3& vec3::substract(vec3 &vec) {
-  this->x -= vec.x;
-  this->y -= vec.y;
-  this->z -= vec.z;
+vec3 vec3::substract(const vec3 &vec) const {
+  vec3 result = *this;
+  result.x -= vec.x;
+  result.y -= vec.y;
+  result.z -= vec.z;
 
-  return *this;
+  return result;
 }
 
-vec3& vec3::multiply(float multiplier) {
-  this->x *= multiplier;
-  this->y *= multiplier;
-  this->z *= multiplier;
+vec3 vec3::multiply(const float multiplier) const {
+  vec3 result = *this;
+  result.x *= multiplier;
+  result.y *= multiplier;
+  result.z *= multiplier;
 
-  return *this;
+  return result;
 }
 
-vec3& vec3::divide(float divider) {
+vec3 vec3::divide(const float divider) const {
+  vec3 result = *this;
   if (divider == 0.0f) {
     throw std::invalid_argument("cant divide by 0");
   }
 
-  this->x /= divider;
-  this->y /= divider;
-  this->z /= divider;
+  result.x /= divider;
+  result.y /= divider;
+  result.z /= divider;
 
-  return *this;
+  return result;
 }
 
 float vec3::len() {

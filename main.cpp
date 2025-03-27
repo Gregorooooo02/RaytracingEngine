@@ -119,6 +119,8 @@ int main() {
     std::cout << "Hit: " << hit7 << std::endl;
 
     std::cout << std::endl;
+
+    std::cout << "=============== DODATKOWE ===============\n";
     // Additional exercises!!
     // Ex 1 & 2 - check if all the matrices methods work correctly
     math::mat3x3 m1(1, 2, 3,

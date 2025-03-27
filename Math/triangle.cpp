@@ -17,7 +17,9 @@ triangle::triangle(vec3& v1, vec3& v2, vec3& v3) {
     this->vertices[1] = v2;
     this->vertices[2] = v3;
 
-    this->normal = (v2.substract(v1)).crossProduct(v3.substract(v1)).normalize();
+    vec3 temp = v3.substract(v1);
+
+    this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
 }
 
 triangle::~triangle() = default;

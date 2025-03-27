@@ -12,10 +12,10 @@ namespace math {
       vec3& operator=(const vec3 &vec);
       ~vec3();
 
-      vec3& add(vec3 &vec);
-      vec3& substract(vec3 &vec);
-      vec3& multiply(float multiplier);
-      vec3& divide(float divider);
+      vec3 add(const vec3 &vec) const;
+      vec3 substract(const vec3 &vec) const;
+      vec3 multiply(float multiplier) const;
+      vec3 divide(float divider) const;
       float len();
 
       vec3 normalize();
