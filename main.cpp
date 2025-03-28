@@ -7,12 +7,12 @@
 
 int main() {
     cam::Perspective camera(
-        math::vec3(0, 0, 1),        // Camera position
-        math::vec3(0, 0, 0),        // Target position
+        math::vec3(0, 0, 0),        // Camera position
+        math::vec3(0, 0, -1),        // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
-        100.0f,                           // Far plane
-        110.0f                             // Field of view
+        1000.0f,                           // Far plane
+        90.0f                             // Field of view
     );
 
     cam::LightIntensity sphere_color1(1.0, 0.0, 0.0);
