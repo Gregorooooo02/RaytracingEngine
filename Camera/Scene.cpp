@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "LightIntensity.h"
 #include "Perspective.h"
+#include "Orthographic.h"
 #include "primitive.h"
 
 #include <iostream>
@@ -40,8 +41,18 @@ Image Scene::renderScene(int width, int height) {
     }
   }
 
-  img.save("output.ppm");
-  std::cout << "Image saved as output.ppm" << std::endl;
+  Camera* cam = this->camera;
+  if (dynamic_cast<Perspective*>(cam)) {
+    img.save("perspective.ppm");
+    std::cout << "Image saved as perspective.ppm" << std::endl;
+  }
+  else if (dynamic_cast<Orthographic*>(cam)) {
+    img.save("orthographic.ppm");
+    std::cout << "Image saved as orthographic.ppm" << std::endl;
+  }
+  else {
+    std::cout << "Unknown camera type." << std::endl;
+  }
 
   return img;
 }
