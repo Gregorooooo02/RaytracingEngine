@@ -19,7 +19,7 @@ int main() {
 
     cam::Perspective persp(
         math::vec3(0, 0, 0),        // Camera position
-        math::vec3(0, 0, -1),       // Target position
+        math::vec3(0, 0, 1),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
@@ -28,7 +28,7 @@ int main() {
 
     math::vec3 s1_center(0, 0, -1);
     math::sphere s1(s1_center, .5f, cam::LightIntensity(0, 1, 0));
-    math::vec3 s2_center(0.5, 0, -2);
+    math::vec3 s2_center(1, 0, -1.5f);
     math::sphere s2(s2_center, .2f, cam::LightIntensity(0, 0, 1));
 
     std::vector<math::primitive*> objects;
@@ -51,7 +51,7 @@ int main() {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 0, 0));
     }
-    scene.renderScene(800, 800);
+    scene.renderScene(200, 200);
 
     return 0;
 }

@@ -128,6 +128,10 @@ vec3 math::operator-(const vec3 &v1, const vec3 &v2) {
   return {v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
 }
 
+vec3 math::operator-(const vec3 &v) {
+  return {-v.x, -v.y, -v.z};
+}
+
 vec3 math::operator*(const vec3 &v, float scalar) {
   return {v.x * scalar, v.y * scalar, v.z * scalar};
 }
