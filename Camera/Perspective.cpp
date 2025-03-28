@@ -22,7 +22,7 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
     u = up.crossProduct(w).normalize();
     v = w.crossProduct(u);
 
-    math::vec3 horizontal = -halfWidth * u;
+    math::vec3 horizontal = halfWidth * u;
     math::vec3 vertical = halfHeight * v;
 
     math::vec3 pixelDeltaU = horizontal / float(imgWidth);

@@ -14,7 +14,7 @@ namespace cam {
     public:
       Scene();
       Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensity* backgroundColor);
-      ~Scene();
+      ~Scene() = default;
       Image renderScene(int width, int height);
   };
 }

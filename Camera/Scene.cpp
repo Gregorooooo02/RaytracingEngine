@@ -2,6 +2,7 @@
 #include "LightIntensity.h"
 #include "Perspective.h"
 #include "primitive.h"
+
 #include <iostream>
 #include <ostream>
 #include <vector>
@@ -20,8 +21,6 @@ Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
   this->backgroundColor = backgroundColor;
   this->objects = objects;
 }
-
-Scene::~Scene() {}
 
 Image Scene::renderScene(int width, int height) {
   cam::Image img(width, height);
@@ -42,7 +41,6 @@ Image Scene::renderScene(int width, int height) {
   }
 
   img.save("output.ppm");
-
   std::cout << "Image saved as output.ppm" << std::endl;
 
   return img;
