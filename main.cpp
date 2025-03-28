@@ -19,7 +19,7 @@ int main() {
 
     cam::Perspective persp(
         math::vec3(0, 0, 0),        // Camera position
-        math::vec3(0, 0, 1),       // Target position
+        math::vec3(0, 0, 1),        // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane

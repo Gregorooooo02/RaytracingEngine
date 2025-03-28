@@ -29,12 +29,12 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
     math::vec3 pixelDeltaU = viewport_u / imgWidth;
     math::vec3 pixelDeltaV = viewport_v / imgHeight;
 
-    math::vec3 upperLeft = origin - (w * focalLength) - viewport_u/2 - viewport_v/2;
+    math::vec3 lowerLeft = origin - (w * focalLength) - viewport_u/2 - viewport_v/2;
 
-    float s = float(pixelX) / float(imgWidth);
-    float t = float(pixelY) / float(imgHeight);
+    float a = float(pixelX + 0.5f) / float(imgWidth);
+    float b = float(pixelY + 0.5f) / float(imgHeight);
 
-    math::vec3 pixelPos = upperLeft + s * viewport_u + t * viewport_v;
+    math::vec3 pixelPos = lowerLeft + a * viewport_u + b * viewport_v;
     math::vec3 direction = (pixelPos - origin).normalize();
 
     math::ray ray(
