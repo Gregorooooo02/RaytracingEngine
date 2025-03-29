@@ -33,8 +33,8 @@ int main() {
     math::sphere s2(s2_center, .2f, cam::LightIntensity(0, 0, 1));
 
     std::vector<math::primitive*> objects;
-    // objects.push_back(&s2);
     objects.push_back(&s1);
+    objects.push_back(&s2);
 
     std::cout << "Choose camera type (1 for Orthographic, 2 for Perspective): ";
     int choice;
@@ -52,7 +52,7 @@ int main() {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     }
-    scene.renderScene(10, 10);
+    scene.renderScene(100, 100);
 
     return 0;
 }
