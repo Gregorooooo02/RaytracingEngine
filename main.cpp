@@ -23,6 +23,7 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
+        10,                               // Number of samples
         90.0f                             // Field of view
     );
 
@@ -32,7 +33,7 @@ int main() {
     math::sphere s2(s2_center, .2f, cam::LightIntensity(0, 0, 1));
 
     std::vector<math::primitive*> objects;
-    objects.push_back(&s2);
+    // objects.push_back(&s2);
     objects.push_back(&s1);
 
     std::cout << "Choose camera type (1 for Orthographic, 2 for Perspective): ";
@@ -43,15 +44,15 @@ int main() {
 
     if (choice == 1) {
         std::cout << "Using Orthographic camera." << std::endl;
-        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     } else if (choice == 2) {
         std::cout << "Using Perspective camera." << std::endl;
-        scene = cam::Scene(&persp, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&persp, objects, new cam::LightIntensity(1, 1, 1));
     } else {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
-        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     }
-    scene.renderScene(200, 200);
+    scene.renderScene(10, 10);
 
     return 0;
 }

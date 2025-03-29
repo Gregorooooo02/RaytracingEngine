@@ -24,19 +24,31 @@ Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
 }
 
 Image Scene::renderScene(int width, int height) {
-  cam::Image img(width, height);
-  for (int y = 0; y < width; y++) {
-    for (int x = 0; x < height; x++) {
-      math::ray ray = camera->generateRay(x, y, width, height);
+  LightIntensity pixel_color(0, 0, 0);
+  Image img(width, height);
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
       bool hit = false;
+      pixel_color = LightIntensity(0, 0, 0);
       for (int o = 0; o < this->objects.size(); o++) {
-        if (this->objects[o]->hit(ray)) {
-          img.setPixel(x, y, this->objects[o]->color);
-          hit = true;
+        for (int samples = 0; samples < camera->samplesCount; samples++) {
+          math::ray ray = camera->generateRay(x, y, width, height);
+          if (this->objects[o]->hit(ray)) {
+            pixel_color = pixel_color + this->objects[o]->color;
+            hit = true;
+          }
         }
-      }
-      if (!hit) {
-        img.setPixel(x, y, *this->backgroundColor);
+        pixel_color = pixel_color / camera->samplesCount;
+        std::cout << "Position " << x << " " << y << " ";
+        std::cout << "Pixel color: " << pixel_color.r << " "
+                  << pixel_color.g << " " << pixel_color.b
+                  << std::endl;
+        if (!hit) {
+          img.setPixel(x, y, *this->backgroundColor);
+        }
+        else {
+          img.setPixel(x, y, pixel_color);
+        }
       }
     }
   }

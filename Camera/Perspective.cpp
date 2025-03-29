@@ -1,11 +1,14 @@
 #include "Perspective.h"
 
 #include <cmath>
+#include <iostream>
 
 using namespace cam;
 
-Perspective::Perspective(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP, float fov)
-    : Camera(pos, tgt, upVec, nearP, farP), fov(fov) {}
+Perspective::Perspective(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP, int samples, float fov)
+    : Camera(pos, tgt, upVec, nearP, farP, samples), fov(fov) {
+    math::vec3 u, v, w;
+}
 
 math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int imgHeight) {
     math::vec3 u, v, w;
@@ -13,9 +16,9 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
 
     float focalLength = (target - position).len();
     float theta = fov * M_PI / 180.0f;
+    float h = tan(theta / 2.0f);
     float aspectRatio = float(imgWidth) / float(imgHeight);
 
-    float h = tan(theta / 2.0f);
     float halfHeight = 2.0f * h * focalLength;
     float halfWidth = aspectRatio * halfHeight;
 
@@ -29,13 +32,13 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
     math::vec3 pixelDeltaU = viewport_u / imgWidth;
     math::vec3 pixelDeltaV = viewport_v / imgHeight;
 
-    math::vec3 lowerLeft = origin - (w * focalLength) - viewport_u/2 - viewport_v/2;
+    math::vec3 upperLeft = origin - (w * focalLength) - viewport_u/2 - viewport_v/2;
+    auto pixel00 = upperLeft + 0.5f * (pixelDeltaU + pixelDeltaV);
 
-    float a = float(pixelX + 0.5f) / float(imgWidth);
-    float b = float(pixelY + 0.5f) / float(imgHeight);
+    auto offset = sampleSquare();
+    auto pixelSample = pixel00 + ((pixelX + offset.x) * pixelDeltaU) + ((pixelY + offset.y) * pixelDeltaV);
 
-    math::vec3 pixelPos = lowerLeft + a * viewport_u + b * viewport_v;
-    math::vec3 direction = (pixelPos - origin).normalize();
+    math::vec3 direction = (pixelSample - origin);
 
     math::ray ray(
         origin,

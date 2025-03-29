@@ -2,8 +2,8 @@
 
 using namespace cam;
 
-Orthographic::Orthographic(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP)
-    : Camera(pos, tgt, upVec, nearP, farP) {}
+Orthographic::Orthographic(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP, int samples)
+    : Camera(pos, tgt, upVec, nearP, farP, samples) {}
 
 math::ray Orthographic::generateRay(int pixelX, int pixelY, int imgWidth, int imgHeight) {
     float pixelWidth = 2.0f  / imgHeight;

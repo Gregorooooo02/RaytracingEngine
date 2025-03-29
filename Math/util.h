@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-#include <math.h>
+#include <cstdlib>
 
 namespace math {
     inline float degreesToRadians(float degrees) {
@@ -18,5 +18,9 @@ namespace math {
       else {
         return (-b - std::sqrt(-discriminant)) / a;
       }
+    }
+
+    inline float random_float() {
+      return std::rand() / (RAND_MAX + 1.0f);
     }
 }
