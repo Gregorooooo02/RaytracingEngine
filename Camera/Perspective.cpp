@@ -22,15 +22,15 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
     float theta = fov * M_PI / 180.0f;
     float h = tan(theta / 2.0f);
 
-    float halfHeight = 2.0f * h * focalLength;
-    float halfWidth = aspectRatio * halfHeight;
+    float viewportHeight = 2.0f * h * focalLength;
+    float viewportWidth = aspectRatio * viewportHeight;
 
     w = (position - target).normalize();
     u = up.crossProduct(w).normalize();
     v = w.crossProduct(u);
 
-    math::vec3 viewport_u = halfWidth * u;
-    math::vec3 viewport_v = halfHeight * -v;
+    math::vec3 viewport_u = viewportWidth * u;
+    math::vec3 viewport_v = viewportHeight * -v;
 
     math::vec3 pixelDeltaU = viewport_u / imgWidth;
     math::vec3 pixelDeltaV = viewport_v / imgHeight;
@@ -41,7 +41,7 @@ math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int img
     auto offset = sampleSquare();
     auto pixelSample = pixel00 + ((pixelX + offset.x) * pixelDeltaU) + ((pixelY + offset.y) * pixelDeltaV);
 
-    math::vec3 direction = (pixelSample - origin);
+    math::vec3 direction = (pixelSample - origin).normalize();
 
     math::ray ray(
         origin,

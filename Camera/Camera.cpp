@@ -17,6 +17,7 @@ Camera::Camera()
     // Default constructor initializes the camera to a standard position and orientation
 }
 
+// Returns a vec3 with random x and y values in the range [-0.5, 0.5]
 math::vec3 Camera::sampleSquare() const {
     return {math::random_float() - 0.5f, math::random_float() - 0.5f, 0};
 }
