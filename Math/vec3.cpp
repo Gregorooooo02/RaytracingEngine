@@ -87,9 +87,7 @@ vec3 vec3::normalize() {
     throw std::invalid_argument("cant divide by 0");
   }
 
-  result.divide(length);
-
-  return result;
+  return result/length;
 }
 
 float vec3::dotProduct(vec3 &vec) {

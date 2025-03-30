@@ -11,18 +11,21 @@ Perspective::Perspective(const math::vec3 &pos, const math::vec3 &tgt, const mat
 }
 
 math::ray Perspective::generateRay(int pixelX, int pixelY, int imgWidth, int imgHeight) {
+    float aspectRatio = float(imgWidth) / float(imgHeight);
+    imgHeight = int(imgWidth / aspectRatio);
+    imgHeight = (imgHeight < 1) ? 1 : imgHeight;
+
     math::vec3 u, v, w;
     math::vec3 origin = position;
 
-    float focalLength = (target - position).len();
+    float focalLength = (position - target).len();
     float theta = fov * M_PI / 180.0f;
     float h = tan(theta / 2.0f);
-    float aspectRatio = float(imgWidth) / float(imgHeight);
 
     float halfHeight = 2.0f * h * focalLength;
     float halfWidth = aspectRatio * halfHeight;
 
-    w = (target - position).normalize();
+    w = (position - target).normalize();
     u = up.crossProduct(w).normalize();
     v = w.crossProduct(u);
 
