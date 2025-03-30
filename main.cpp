@@ -57,7 +57,7 @@ int main() {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     }
-    scene.renderScene(640, 360);
+    scene.renderScene(200, 100);
 
     return 0;
 }
