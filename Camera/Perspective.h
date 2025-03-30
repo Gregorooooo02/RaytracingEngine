@@ -7,7 +7,7 @@ namespace cam {
     public:
         float fov = 90.0f; // Field of view in degrees
 
-        Perspective(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP, float fov);
+        Perspective(const math::vec3 &pos, const math::vec3 &tgt, const math::vec3 &upVec, float nearP, float farP, int samples = 10, float fov = 90.0f);
         Perspective() = default;
 
         math::ray generateRay(int pixelX, int pixelY, int imgWidth, int imgHeight) override;

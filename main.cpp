@@ -14,7 +14,8 @@ int main() {
         math::vec3(0, 0, -1),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
-        1000.0f                           // Far plane
+        1000.0f,                          // Far plane
+        10                                // Number of samples
     );
 
     cam::Perspective persp(
@@ -23,17 +24,22 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
+        10,                               // Number of samples
         90.0f                             // Field of view
     );
 
     math::vec3 s1_center(0, 0, -1);
     math::sphere s1(s1_center, .5f, cam::LightIntensity(0, 1, 0));
-    math::vec3 s2_center(0.5, 0, -2);
+    math::vec3 s2_center(0.5, 0, -1.5f);
     math::sphere s2(s2_center, .2f, cam::LightIntensity(0, 0, 1));
 
+    math::vec3 s3_center(0, -100, -1);
+    math::sphere s3(s3_center, 100, cam::LightIntensity(1, 1, 0));
+
     std::vector<math::primitive*> objects;
-    objects.push_back(&s2);
     objects.push_back(&s1);
+    objects.push_back(&s2);
+    objects.push_back(&s3);
 
     std::cout << "Choose camera type (1 for Orthographic, 2 for Perspective): ";
     int choice;
@@ -43,15 +49,15 @@ int main() {
 
     if (choice == 1) {
         std::cout << "Using Orthographic camera." << std::endl;
-        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     } else if (choice == 2) {
         std::cout << "Using Perspective camera." << std::endl;
-        scene = cam::Scene(&persp, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&persp, objects, new cam::LightIntensity(1, 1, 1));
     } else {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
-        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 0, 0));
+        scene = cam::Scene(&orto, objects, new cam::LightIntensity(1, 1, 1));
     }
-    scene.renderScene(800, 800);
+    scene.renderScene(200, 100);
 
     return 0;
 }

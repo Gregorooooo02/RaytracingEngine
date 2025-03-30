@@ -19,5 +19,6 @@ namespace cam {
         LightIntensity operator-(const LightIntensity& other) const;
         LightIntensity operator*(const LightIntensity& other) const;
         LightIntensity operator/(const LightIntensity& other) const;
+        LightIntensity operator/(const float& scalar) const;
     };
 } // namespace cam
