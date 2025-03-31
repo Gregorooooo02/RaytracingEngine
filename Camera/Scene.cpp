@@ -4,6 +4,7 @@
 #include "Perspective.h"
 #include "primitive.h"
 
+#include <cmath>
 #include <iostream>
 #include <ostream>
 #include <vector>
@@ -12,21 +13,46 @@ using namespace cam;
 
 Scene::Scene() {
   this->camera = new Perspective();
-  this->backgroundColor = new LightIntensity(1, 0, 0);
   this->objects = std::vector<math::primitive *>();
+
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      this->colors[i][j] = new LightIntensity;
+    }
+  }
 }
 
 Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
-             LightIntensity *backgroundColor) {
+             LightIntensity *colors[6][6]) {
   this->camera = camera;
-  this->backgroundColor = backgroundColor;
   this->objects = objects;
+
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      this->colors[i][j] = colors[i][j];
+    }
+  }
+}
+
+Scene::Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensity bg) {
+  this->camera = camera;
+  this->objects = objects;
+
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      this->colors[i][j] = &bg;
+    }
+  }
 }
 
 Image Scene::renderScene(int width, int height) {
+  int width_chunk_size = width / 6;
+  int height_chunk_size = height / 6;
   Image img(width, height);
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
+      int current_chunk_x = std::floor(x / width_chunk_size);
+      int current_chunk_y = std::floor(y / height_chunk_size);
       LightIntensity pixel_color;
       for (int samples = 0; samples < camera->samplesCount; samples++) {
         bool hit = false;
@@ -39,7 +65,8 @@ Image Scene::renderScene(int width, int height) {
           }
         }
         if (!hit) {
-          pixel_color = pixel_color + *this->backgroundColor;
+          pixel_color =
+              pixel_color + *this->colors[current_chunk_x][current_chunk_y];
         }
       }
       pixel_color = pixel_color / camera->samplesCount;

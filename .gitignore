@@ -60,5 +60,5 @@ cmake-build-debug/
 token.txt
 
 # Output image file
-output.ppm
+*.ppm
 
