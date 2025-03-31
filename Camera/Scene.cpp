@@ -34,9 +34,20 @@ Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
   }
 }
 
+Scene::Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensity bg) {
+  this->camera = camera;
+  this->objects = objects;
+
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 6; j++) {
+      this->colors[i][j] = &bg;
+    }
+  }
+}
+
 Image Scene::renderScene(int width, int height) {
-  int width_chunk_size = width / 5;
-  int height_chunk_size = height / 5;
+  int width_chunk_size = width / 6;
+  int height_chunk_size = height / 6;
   Image img(width, height);
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
@@ -54,7 +65,8 @@ Image Scene::renderScene(int width, int height) {
           }
         }
         if (!hit) {
-          pixel_color = pixel_color + *this->colors[current_chunk_x][current_chunk_y];
+          pixel_color =
+              pixel_color + *this->colors[current_chunk_x][current_chunk_y];
         }
       }
       pixel_color = pixel_color / camera->samplesCount;
