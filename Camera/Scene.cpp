@@ -46,8 +46,8 @@ Scene::Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensi
 }
 
 Image Scene::renderScene(int width, int height) {
-  int width_chunk_size = width / 6;
-  int height_chunk_size = height / 6;
+  float width_chunk_size = width / 6.0f;
+  float height_chunk_size = height / 6.0f;
   Image img(width, height);
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
