@@ -7,14 +7,15 @@
 namespace math {
   class sphere : public primitive {
     private:
-      bool hit(ray &ray, float tMin, float tMax);
+      vec3* hit(ray &ray, float tMin, float tMax);
     public:
       vec3 center;
       float radius;
       sphere();
-      sphere(vec3 &center,  float radius, cam::LightIntensity color);
+      sphere(vec3 &center,  float radius, Material &material);
       sphere(const sphere &sphere);
-      bool hit(ray &ray);
+      vec3* hit(ray &ray);
+      vec3 getNormal(vec3 point);
       ~sphere();
   };
 

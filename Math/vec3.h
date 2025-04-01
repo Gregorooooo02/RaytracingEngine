@@ -23,6 +23,7 @@ namespace math {
       vec3 crossProduct(vec3 &vec);
 
       vec3 rotate(float, vec3&);
+      vec3 reflect(vec3 &vec);
   };
 
 

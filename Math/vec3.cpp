@@ -107,14 +107,20 @@ vec3 vec3::rotate(float angle, vec3& axis) {
   float angleRad = angle * M_PI / 180.0f;
   quaternion p(0, *this);
 
-  axis.normalize();
-  quaternion q(angleRad, axis);
+  vec3 normalizedAxis = axis.normalize();
+  quaternion q(angleRad, normalizedAxis);
   q.convertToUnitNorm();
 
   quaternion qInverse = q.inverse();
   quaternion rotatedVector = q.multiply(p).multiply(qInverse);
 
   return rotatedVector.v;
+}
+
+vec3 vec3::reflect(vec3 &vec) {
+  vec3 result = *this;
+  float dotProduct = result.dotProduct(vec);
+  return result - vec.multiply(2 * dotProduct);
 }
 
 // Operators

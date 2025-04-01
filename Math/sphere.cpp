@@ -10,10 +10,10 @@ using namespace math;
 sphere::sphere() {
   this->center = vec3();
   this->radius = 0.0f;
-  this->color = cam::LightIntensity();
+  this->material = Material();
 }
 
-sphere::sphere(vec3 &center, float radius, cam::LightIntensity color) {
+sphere::sphere(vec3 &center, float radius, Material &material) {
   this->center = center;
 
   if (radius < 0) {
@@ -21,7 +21,7 @@ sphere::sphere(vec3 &center, float radius, cam::LightIntensity color) {
   }
 
   this->radius = radius;
-  this->color = color;
+  this->material = material;
 }
 
 sphere::~sphere() {}
@@ -29,14 +29,14 @@ sphere::~sphere() {}
 sphere::sphere(const sphere &sphere) {
   this->center = sphere.center;
   this->radius = sphere.radius;
-  this->color = sphere.color;
+  this->material = sphere.material;
 }
 
-bool sphere::hit(ray &ray) {
+vec3* sphere::hit(ray &ray) {
   return this->hit(ray, std::numeric_limits<float>::min(), std::numeric_limits<float>::max());
 }
 
-bool sphere::hit(ray &ray, float tMin, float tMax) {
+vec3* sphere::hit(ray &ray, float tMin, float tMax) {
   vec3 oc = ray.o.substract(this->center);
 
   float a = ray.d.dotProduct(ray.d);
@@ -47,7 +47,7 @@ bool sphere::hit(ray &ray, float tMin, float tMax) {
 
   if (discriminant < 0) {
     // std::cout << "No hit" << std::endl;
-    return false;
+    return nullptr;
   }
 
   float x1 = math::root(b, -discriminant, a);
@@ -68,5 +68,12 @@ bool sphere::hit(ray &ray, float tMin, float tMax) {
   //   std::cout << "Hit point 2: " << hitPoint2.x << ", " << hitPoint2.y << ", " << hitPoint2.z << std::endl;
   // }
 
-  return (x1 > tMin && x1 < tMax) || (x2 > tMin && x2 < tMax);
+  vec3 result = ray.point_at(x1);
+  vec3* resultPtr = new vec3(result);
+  return resultPtr;
+}
+
+vec3 sphere::getNormal(vec3 point) {
+  vec3 normal = point.substract(this->center);
+  return normal.normalize();
 }

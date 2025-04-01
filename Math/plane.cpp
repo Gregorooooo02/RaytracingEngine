@@ -11,38 +11,38 @@ plane::plane() {
     this->c = 0.0f;
     this->d = 0.0f;
     this->normal = vec3();
-    this->color = cam::LightIntensity();
+    this->material = Material();
 }
 
-plane::plane(float a, float b, float c, float d, cam::LightIntensity color) {
+plane::plane(float a, float b, float c, float d, Material &material) {
     this->a = a;
     this->b = b;
     this->c = c;
     this->d = d;
     this->normal = vec3(a, b, c);
-    this->color = color;
+    this->material = material;
 }
 
-plane::plane(const vec3& normal, float d, cam::LightIntensity color) {
+plane::plane(const vec3& normal, float d, Material &material) {
     this->a = normal.x;
     this->b = normal.y;
     this->c = normal.z;
     this->d = d;
     this->normal = normal;
-    this->color = color;
+    this->material = material;
 }
 
-plane::plane(vec3& normal, vec3& point, cam::LightIntensity color) {
+plane::plane(vec3& normal, vec3& point, Material &material) {
     this->a = normal.x;
     this->b = normal.y;
     this->c = normal.z;
     this->d = -normal.dotProduct(point);
     this->normal = normal;
     this->point = point;
-    this->color = color;
+    this->material = material;
 }
 
-plane::plane(vec3& p1, vec3& p2, vec3& p3, cam::LightIntensity color) {
+plane::plane(vec3& p1, vec3& p2, vec3& p3, Material &material) {
     vec3 temp = p3.substract(p1);
     this->normal = (p2.substract(p1)).crossProduct(temp).normalize();
     this->a = this->normal.x;
@@ -50,7 +50,7 @@ plane::plane(vec3& p1, vec3& p2, vec3& p3, cam::LightIntensity color) {
     this->c = this->normal.z;
     this->d = -this->normal.dotProduct(p1);
     this->point = p1;
-    this->color = color;
+    this->material = material;
 }
 
 plane::plane(const plane& plane) {
@@ -60,22 +60,24 @@ plane::plane(const plane& plane) {
     this->d = plane.d;
     this->normal = plane.normal;
     this->point = plane.point;
-    this->color = color;
+    this->material = plane.material;
 }
 
 plane::~plane() {}
 
-bool plane::hit(ray& ray) {
+vec3* plane::hit(ray& ray) {
     float denominator = this->normal.dotProduct(ray.d);
     if (denominator == 0) {
-        return false;
+        return nullptr;
     }
 
     float t = -(this->normal.dotProduct(ray.o) + this->d) / denominator;
 
-    // Tymczasowe
-    vec3 hitPoint = ray.point_at(t);
-    std::cout << "Hit point: " << hitPoint.x << ", " << hitPoint.y << ", " << hitPoint.z << std::endl;
+    vec3 result = ray.point_at(t);
+    vec3* resultPtr = new vec3(result);
+    return resultPtr;
+}
 
-    return t >= 0;
+vec3 plane::getNormal(vec3 point) {
+    return this->normal;
 }

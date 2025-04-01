@@ -10,7 +10,8 @@ file(GLOB SOURCES
     Math/*.cpp
     Utils/*.cpp
     Camera/*.cpp
+    Light/*.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC Math Utils Camera)
+target_include_directories(${PROJECT_NAME} PUBLIC Math Utils Camera Light)

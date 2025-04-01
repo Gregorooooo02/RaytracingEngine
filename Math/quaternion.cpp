@@ -97,7 +97,7 @@ quaternion quaternion::inverse() {
 
 void quaternion::convertToUnitNorm() {
     float angle = degreesToRadians(this->s);
-    v.normalize();
+    v = v.normalize();
 
     this->s = std::cosf(angle/2);
     this->v.multiply(std::sinf(angle/2));

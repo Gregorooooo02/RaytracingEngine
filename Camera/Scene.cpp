@@ -13,6 +13,7 @@ using namespace cam;
 
 Scene::Scene() {
   this->camera = new Perspective();
+  this->lights = std::vector<licht::Light *>();
   this->objects = std::vector<math::primitive *>();
 
   for (int i = 0; i < 6; i++) {
@@ -22,9 +23,11 @@ Scene::Scene() {
   }
 }
 
-Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
+Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
+             std::vector<math::primitive *> objects,
              LightIntensity *colors[6][6]) {
   this->camera = camera;
+  this->lights = lights;
   this->objects = objects;
 
   for (int i = 0; i < 6; i++) {
@@ -34,8 +37,10 @@ Scene::Scene(Camera *camera, std::vector<math::primitive *> objects,
   }
 }
 
-Scene::Scene(Camera* camera, std::vector<math::primitive*> objects, LightIntensity bg) {
+Scene::Scene(Camera* camera, std::vector<licht::Light*> lights,
+             std::vector<math::primitive*> objects, LightIntensity bg) {
   this->camera = camera;
+  this->lights = lights;
   this->objects = objects;
 
   for (int i = 0; i < 6; i++) {
@@ -58,11 +63,20 @@ Image Scene::renderScene(int width, int height) {
         bool hit = false;
         math::ray ray = camera->generateRay(x, y, width, height);
         for (int o = 0; o < this->objects.size(); o++) {
-          if (this->objects[o]->hit(ray)) {
-            pixel_color = pixel_color + this->objects[o]->color;
+          math::vec3 *intersection = this->objects[o]->hit(ray);
+          if (intersection != nullptr) {
+            for (int l = 0; l < this->lights.size(); l++) {
+              pixel_color = pixel_color + this->lights[l]->getAmbient(
+                  this->objects[o]);
+              pixel_color = pixel_color + this->lights[l]->getDiffuse(
+                  *intersection, this->objects[o]);
+              pixel_color = pixel_color + this->lights[l]->getSpecular(
+                  *intersection, this->objects[o]);
+            }
             hit = true;
             break;
           }
+          delete intersection;
         }
         if (!hit) {
           pixel_color =

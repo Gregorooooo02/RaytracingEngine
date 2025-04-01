@@ -1,12 +1,13 @@
 #pragma once
 
-#include "LightIntensity.h"
+#include "Material.h"
 #include "ray.h"
 
 namespace math {
   class primitive {
     public:
-      cam::LightIntensity color;
-      virtual bool hit(ray &ray) = 0;
+      Material material;
+      virtual vec3* hit(ray &ray) = 0;
+      virtual vec3 getNormal(vec3 point) = 0;
   };
 }

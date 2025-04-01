@@ -11,10 +11,11 @@ namespace math {
             vec3 vertices[3];
             vec3 normal;
             triangle();
-            triangle(vec3, vec3, vec3, cam::LightIntensity color);
-            triangle(vec3&, vec3&, vec3&, cam::LightIntensity color);
+            triangle(vec3, vec3, vec3, Material&);
+            triangle(vec3&, vec3&, vec3&, Material&);
             ~triangle();
             triangle(const triangle&);
-            bool hit(ray&);
+            vec3* hit(ray&);
+            vec3 getNormal(vec3 point);
     };
 } // namespace math

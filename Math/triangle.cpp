@@ -9,24 +9,24 @@ triangle::triangle() {
         this->vertices[i] = vec3();
     }
     this->normal = vec3();
-    this->color = cam::LightIntensity();
+    this->material = Material();
 }
 
-triangle::triangle(vec3 v1, vec3 v2, vec3 v3, cam::LightIntensity color) {
+triangle::triangle(vec3 v1, vec3 v2, vec3 v3, Material& material) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
-    this->color = color;
+    this->material = material;
 
     vec3 temp = v3.substract(v1);
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
 }
 
-triangle::triangle(vec3& v1, vec3& v2, vec3& v3, cam::LightIntensity color) {
+triangle::triangle(vec3& v1, vec3& v2, vec3& v3, Material& material) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
-    this->color = color;
+    this->material = material;
 
     vec3 temp = v3.substract(v1);
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
@@ -39,10 +39,10 @@ triangle::triangle(const triangle& t) {
         this->vertices[i] = t.vertices[i];
     }
     this->normal = t.normal;
-    this->color = t.color;
+    this->material = t.material;
 }
 
-bool triangle::hit(ray& ray) {
+vec3* triangle::hit(ray& ray) {
     vec3 v1v0 = this->vertices[1] - this->vertices[0];
     vec3 v2v0 = this->vertices[2] - this->vertices[0];
 
@@ -82,16 +82,18 @@ bool triangle::hit(ray& ray) {
 
             if (found) {
                 t = t_candidate;
-                return true;
+                vec3 result = ray.point_at(t);
+                vec3* resultPtr = new vec3(result);
+                return resultPtr;
             }
         }
 
-        return false;
+        return nullptr;
     }
     t = -(normal.dotProduct(ray.o) + d) / denominator;
 
     if (t < 0) {
-        return false;
+        return nullptr;
     }
 
     vec3 hitPoint = ray.o + ray.d * t;
@@ -100,7 +102,7 @@ bool triangle::hit(ray& ray) {
     vec3 v0p = hitPoint - this->vertices[0];
     vec3 ne = v1v0.crossProduct(v0p);
     if (normal.dotProduct(ne) <= 0) {
-        return false;
+        return nullptr;
     }
 
     // Test krawędzi 1
@@ -108,7 +110,7 @@ bool triangle::hit(ray& ray) {
     vec3 v1p = hitPoint - this->vertices[1];
     ne = v2v1.crossProduct(v1p);
     if (normal.dotProduct(ne) <= 0) {
-        return false;
+        return nullptr;
     }
 
     // Test krawędzi 2
@@ -116,8 +118,15 @@ bool triangle::hit(ray& ray) {
     vec3 v2p = hitPoint - this->vertices[2];
     ne = v0v2.crossProduct(v2p);
     if (normal.dotProduct(ne) <= 0) {
-        return false;
+        return nullptr;
     }
 
-    return true;
+
+    vec3 result = ray.point_at(t);
+    vec3* resultPtr = new vec3(result);
+    return resultPtr;
+}
+
+vec3 triangle::getNormal(vec3 point) {
+    return this->normal;
 }
