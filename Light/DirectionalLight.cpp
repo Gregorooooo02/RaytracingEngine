@@ -1,6 +1,8 @@
 #include "DirectionalLight.h"
+#include "ray.h"
 
 #include <algorithm>
+#include <cmath>
 
 using namespace licht;
 
@@ -38,4 +40,10 @@ cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primit
     float dotProduct = std::max(0.0f, reflectDir.dotProduct(viewDir));
 
     return this->intensity * object->material.specular * pow(dotProduct, object->material.shininess);
+}
+math::ray DirectionalLight::getShadowRay(math::vec3 origin) {
+  math::ray ray;
+  ray.o = origin;
+  ray.d = -this->direction;
+  return ray;
 }

@@ -22,8 +22,8 @@ int main() {
     );
 
     cam::Perspective persp(
-        math::vec3(0, 0, 0),        // Camera position
-        math::vec3(0, 0, -1),       // Target position
+        math::vec3(2, 0, -2),        // Camera position
+        math::vec3(0, 0, -1.5),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
@@ -38,6 +38,13 @@ int main() {
         50,
         0.0
     );
+    Material mat2(
+        cam::LightIntensity(0.1, 0, 0),
+        cam::LightIntensity(0.0, 0.0, 1.0),
+        cam::LightIntensity(0.5, 0.5, 0.5),
+        50,
+        0.0
+    );
 
     licht::DirectionalLight light1(
         cam::LightIntensity(1, 1, 1),
@@ -45,13 +52,16 @@ int main() {
     );
 
     math::vec3 s1_center(0, 0, -1);
-    math::sphere s1(s1_center, .5f, mat1);
+    math::sphere s1(s1_center, .5f, mat2);
+    math::vec3 s2Center(0, 0, -2);
+    math::sphere s2(s2Center, 0.5f, mat1);
 
     std::vector<licht::Light*> lights;
     lights.push_back(&light1);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
+    objects.push_back(&s2);
 
     std::cout << "Choose camera type (1 for Orthographic, 2 for Perspective): ";
     int choice;

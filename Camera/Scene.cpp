@@ -3,6 +3,7 @@
 #include "Orthographic.h"
 #include "Perspective.h"
 #include "primitive.h"
+#include "vec3.h"
 
 #include <cmath>
 #include <iostream>
@@ -66,12 +67,28 @@ Image Scene::renderScene(int width, int height) {
           math::vec3 *intersection = this->objects[o]->hit(ray);
           if (intersection != nullptr) {
             for (int l = 0; l < this->lights.size(); l++) {
-              pixel_color = pixel_color + this->lights[l]->getAmbient(
-                  this->objects[o]);
-              pixel_color = pixel_color + this->lights[l]->getDiffuse(
-                  *intersection, this->objects[o]);
-              pixel_color = pixel_color + this->lights[l]->getSpecular(
-                  *intersection, this->objects[o]);
+              math::ray shadowRay = lights[l]->getShadowRay(*intersection);
+              math::vec3* hitShadow = nullptr;
+              for (int o2 = 0; o2 < this->objects.size(); o2++) {
+                if (o2 == o) {
+                  continue;
+                }
+                hitShadow = objects[o2]->hit(shadowRay);
+                if (hitShadow != nullptr) {
+                  break;
+                }
+              }
+              if (hitShadow != nullptr) {
+                pixel_color = pixel_color + this->lights[l]->getAmbient(
+                    this->objects[o]);
+              } else {
+                pixel_color = pixel_color + this->lights[l]->getAmbient(
+                    this->objects[o]);
+                pixel_color = pixel_color + this->lights[l]->getDiffuse(
+                    *intersection, this->objects[o]);
+                pixel_color = pixel_color + this->lights[l]->getSpecular(
+                    *intersection, this->objects[o]);
+              }
             }
             hit = true;
             break;

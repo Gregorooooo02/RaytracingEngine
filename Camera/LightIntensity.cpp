@@ -1,6 +1,6 @@
 #include "LightIntensity.h"
-
 #include <algorithm>
+#include <stdexcept>
 
 using namespace cam;
 
