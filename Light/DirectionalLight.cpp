@@ -6,23 +6,26 @@
 
 using namespace licht;
 
-DirectionalLight::DirectionalLight(cam::LightIntensity intensity, math::vec3 direction)
+DirectionalLight::DirectionalLight(cam::LightIntensity intensity,
+                                   math::vec3 direction)
     : Light(intensity), direction(direction) {}
 
 DirectionalLight::DirectionalLight()
-    : Light(cam::LightIntensity(1, 1, 1)), direction(math::vec3(0, -1, -1)) {} // Default direction is -YZ
+    : Light(cam::LightIntensity(1, 1, 1)), direction(math::vec3(0, -1, -1)) {
+} // Default direction is -YZ
 
-cam::LightIntensity DirectionalLight::getAmbient(math::primitive* object) {
-    return this->intensity * object->material.ambient;
+cam::LightIntensity DirectionalLight::getAmbient(math::primitive *object) {
+  return this->intensity * object->material.ambient;
 }
 
-cam::LightIntensity DirectionalLight::getDiffuse(math::vec3 point, math::primitive* object) {
-    math::vec3 normal = object->getNormal(point);
-    math::vec3 lightDir = this->direction.normalize();
+cam::LightIntensity DirectionalLight::getDiffuse(math::vec3 point,
+                                                 math::primitive *object) {
+  math::vec3 normal = object->getNormal(point);
+  math::vec3 lightDir = this->direction.normalize();
 
-    float dotProduct = std::max(0.0f, normal.dotProduct(lightDir));
+  float dotProduct = std::max(0.0f, normal.dotProduct(lightDir));
 
-    return this->intensity * object->material.diffuse * dotProduct;
+  return this->intensity * object->material.diffuse * dotProduct;
 }
 
 cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primitive* object, cam::Camera* camera) {
@@ -40,6 +43,6 @@ cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primit
 math::ray DirectionalLight::getShadowRay(math::vec3 origin) {
   math::ray ray;
   ray.o = origin;
-  ray.d = this->direction.normalize();
+  ray.d = this->direction;
   return ray;
 }

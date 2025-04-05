@@ -38,8 +38,8 @@ Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
   }
 }
 
-Scene::Scene(Camera* camera, std::vector<licht::Light*> lights,
-             std::vector<math::primitive*> objects, LightIntensity bg) {
+Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
+             std::vector<math::primitive *> objects, LightIntensity bg) {
   this->camera = camera;
   this->lights = lights;
   this->objects = objects;
@@ -68,19 +68,19 @@ Image Scene::renderScene(int width, int height) {
           if (intersection != nullptr) {
             for (int l = 0; l < this->lights.size(); l++) {
               math::ray shadowRay = lights[l]->getShadowRay(*intersection);
-              math::vec3* hitShadow = nullptr;
+              math::vec3 *hitShadow = nullptr;
               for (int o2 = 0; o2 < this->objects.size(); o2++) {
                 if (o2 == o) {
                   continue;
                 }
-                hitShadow = objects[o2]->hit(shadowRay);
+                hitShadow = this->objects[o2]->hit(shadowRay);
                 if (hitShadow != nullptr) {
                   break;
                 }
               }
               if (hitShadow != nullptr) {
-                pixel_color = pixel_color + this->lights[l]->getAmbient(
-                    this->objects[o]);
+                pixel_color =
+                    pixel_color + this->lights[l]->getAmbient(this->objects[o]);
               } else {
                 pixel_color = pixel_color + this->lights[l]->getAmbient(
                     this->objects[o]);
@@ -89,6 +89,7 @@ Image Scene::renderScene(int width, int height) {
                 pixel_color = pixel_color + this->lights[l]->getSpecular(
                     *intersection, this->objects[o], this->camera);
               }
+              delete hitShadow;
             }
             hit = true;
             break;
