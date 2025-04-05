@@ -22,12 +22,12 @@ int main() {
         10                               // Number of samples
     );
     cam::Perspective persp(
-        math::vec3(-1, 0, 0),        // Camera position
-        math::vec3(0, 0, -1),       // Target position
+        math::vec3(2, 0, 0),        // Camera position
+        math::vec3(0, 0, -.5),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        10,                              // Number of samples
+        1,                              // Number of samples
         90.0f                             // Field of view
     );
 
@@ -53,22 +53,25 @@ int main() {
         0.0f
     );
 
-    licht::DirectionalLight light1(
-        cam::LightIntensity(1, 1, 1),
-        math::vec3(1, 1, 1)
-    );
-    licht::PointLight light2(
-        cam::LightIntensity(1, 1, 1),
-        math::vec3(1, 1, 3),
-        1.0f,
-        0.1f,
-        0.0f
+    Material mat3(
+        cam::LightIntensity(0.1, 0, 0),
+        cam::LightIntensity(1.0, 1.0, 1.0),
+        cam::LightIntensity(0.5, 0.5, 0.5),
+        50,
+        0.0
     );
 
-    math::vec3 s1_center(0, 0, -1);
-    math::sphere s1(s1_center, .5f, mat2);
-    math::vec3 s2Center(0, 0, -2);
-    math::sphere s2(s2Center, 0.5f, mat1);
+    licht::DirectionalLight light1(
+        cam::LightIntensity(1, 1, 1),
+        math::vec3(0, 0, -1)
+    );
+
+    math::vec3 s1_center(0, 0, 0);
+    math::sphere s1(s1_center, .5f, mat1);
+    math::vec3 s2Center(0, 0, -1);
+    math::sphere s2(s2Center, 0.5f, mat2);
+    math::vec3 s3Center(0, 0, 0);
+    math::sphere s3(s3Center, 0.1f, mat3);
 
     math::vec3 p1Normal(0, 1, 0); // Normal pointing up
     math::vec3 p1Center(0, -0.5, 0); // Center of the plane
@@ -101,7 +104,7 @@ int main() {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, lights, objects, bg);
     }
-    scene.renderScene(300, 300);
+    scene.renderScene(200, 200);
 
     return 0;
 }
