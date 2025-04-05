@@ -25,25 +25,21 @@ cam::LightIntensity DirectionalLight::getDiffuse(math::vec3 point, math::primiti
     return this->intensity * object->material.diffuse * dotProduct;
 }
 
-cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primitive* object) {
+cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primitive* object, cam::Camera* camera) {
     math::vec3 normal = object->getNormal(point);
     math::vec3 lightDir = this->direction.normalize();
-    math::vec3 specular(
-        object->material.specular.getR(),
-        object->material.specular.getG(),
-        object->material.specular.getB()
-    );
+    math::vec3 viewDir = (camera->position - point).normalize(); // Assuming camera->position is the camera position
 
-    math::vec3 viewDir = (point - specular).normalize(); // Assuming specular is the camera position
+    math::vec3 R = (normal * (2.0f * normal.dotProduct(lightDir)) - lightDir).normalize();
+    float dotProduct = std::max(0.0f, R.dotProduct(viewDir));
+    float specularFactor = std::pow(dotProduct, object->material.shininess);
 
-    math::vec3 reflectDir = lightDir.reflect(normal);
-    float dotProduct = std::max(0.0f, reflectDir.dotProduct(viewDir));
-
-    return this->intensity * object->material.specular * pow(dotProduct, object->material.shininess);
+    return this->intensity * object->material.specular * specularFactor;
 }
+
 math::ray DirectionalLight::getShadowRay(math::vec3 origin) {
   math::ray ray;
   ray.o = origin;
-  ray.d = -this->direction;
+  ray.d = this->direction.normalize();
   return ray;
 }

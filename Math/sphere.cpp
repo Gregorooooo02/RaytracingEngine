@@ -74,6 +74,6 @@ vec3* sphere::hit(ray &ray, float tMin, float tMax) {
 }
 
 vec3 sphere::getNormal(vec3 point) {
-  vec3 normal = point.substract(this->center);
+  vec3 normal = (point - this->center).normalize();
   return normal.normalize();
 }

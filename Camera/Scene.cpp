@@ -87,7 +87,7 @@ Image Scene::renderScene(int width, int height) {
                 pixel_color = pixel_color + this->lights[l]->getDiffuse(
                     *intersection, this->objects[o]);
                 pixel_color = pixel_color + this->lights[l]->getSpecular(
-                    *intersection, this->objects[o]);
+                    *intersection, this->objects[o], this->camera);
               }
             }
             hit = true;

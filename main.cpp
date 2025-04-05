@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "DirectionalLight.h"
+#include "PointLight.h"
 #include "LightIntensity.h"
 #include "Orthographic.h"
 #include "Perspective.h"
@@ -20,10 +21,9 @@ int main() {
         1000.0f,                          // Far plane
         10                               // Number of samples
     );
-
     cam::Perspective persp(
-        math::vec3(2, 0, -2),        // Camera position
-        math::vec3(0, 0, -1.5),       // Target position
+        math::vec3(-1, 0, 0),        // Camera position
+        math::vec3(0, 0, -1),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
@@ -39,16 +39,30 @@ int main() {
         0.0
     );
     Material mat2(
-        cam::LightIntensity(0.1, 0, 0),
+        cam::LightIntensity(0, 0, 0.1),
         cam::LightIntensity(0.0, 0.0, 1.0),
         cam::LightIntensity(0.5, 0.5, 0.5),
         50,
         0.0
     );
+    Material mat3(
+        cam::LightIntensity(0.1f, 0.1f, 0.1f),
+        cam::LightIntensity(0.5f, 0.5f, 0.5f),
+        cam::LightIntensity(0.4f, 0.4f, 0.4f),
+        50,
+        0.0f
+    );
 
     licht::DirectionalLight light1(
         cam::LightIntensity(1, 1, 1),
-        math::vec3(0, 1, 1)
+        math::vec3(1, 1, 1)
+    );
+    licht::PointLight light2(
+        cam::LightIntensity(1, 1, 1),
+        math::vec3(1, 1, 3),
+        1.0f,
+        0.1f,
+        0.0f
     );
 
     math::vec3 s1_center(0, 0, -1);
@@ -56,12 +70,18 @@ int main() {
     math::vec3 s2Center(0, 0, -2);
     math::sphere s2(s2Center, 0.5f, mat1);
 
+    math::vec3 p1Normal(0, 1, 0); // Normal pointing up
+    math::vec3 p1Center(0, -0.5, 0); // Center of the plane
+    math::plane p1(p1Normal, p1Center, mat3);
+
     std::vector<licht::Light*> lights;
-    lights.push_back(&light1);
+    // lights.push_back(&light1);
+    lights.push_back(&light2);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
     objects.push_back(&s2);
+    objects.push_back(&p1);
 
     std::cout << "Choose camera type (1 for Orthographic, 2 for Perspective): ";
     int choice;

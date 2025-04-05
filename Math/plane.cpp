@@ -66,12 +66,16 @@ plane::plane(const plane& plane) {
 plane::~plane() {}
 
 vec3* plane::hit(ray& ray) {
+    const float EPSILON = 1e-6f;
     float denominator = this->normal.dotProduct(ray.d);
-    if (denominator == 0) {
+    if (fabs(denominator) < EPSILON) {
         return nullptr;
     }
 
     float t = -(this->normal.dotProduct(ray.o) + this->d) / denominator;
+    if (t < denominator) {
+        return nullptr;
+    }
 
     vec3 result = ray.point_at(t);
     vec3* resultPtr = new vec3(result);
