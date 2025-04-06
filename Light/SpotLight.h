@@ -3,19 +3,23 @@
 #include "Light.h"
 
 namespace licht {
-    class PointLight : public Light {
+    class SpotLight : public Light {
     public:
         math::vec3 position;
+        math::vec3 direction;
+
         float constAttenuation;
         float linearAttenuation;
         float quadraticAttenuation;
+        float cutOffAngle;
+        float dropOffAngle;
 
-        PointLight(cam::LightIntensity intensity, math::vec3 position,
-            float constAttenuation = 1.0f,
-            float linearAttenuation = 0.0f,
-            float quadraticAttenuation = 0.0f
+        SpotLight(cam::LightIntensity intensity, math::vec3 position,
+            math::vec3 direction, float constAttenuation = 1.0f,
+            float linearAttenuation = 0.0f, float quadraticAttenuation = 0.0f,
+            float cutOffAngle = 30.0f, float dropOffAngle = 45.0f
         );
-        PointLight();
+        SpotLight();
 
         cam::LightIntensity getAmbient(math::primitive* object) override;
         cam::LightIntensity getDiffuse(math::vec3 point, math::primitive* object) override;

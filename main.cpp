@@ -10,9 +10,11 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <SpotLight.h>
 #include <vector>
 
 int main() {
+#pragma region Camera
     cam::Orthographic orto(
         math::vec3(0, 0, 0),        // Camera position
         math::vec3(0, 0, -1),       // Target position
@@ -27,10 +29,12 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        1,                              // Number of samples
+        10,                              // Number of samples
         90.0f                             // Field of view
     );
+#pragma endregion
 
+#pragma region Materials
     Material mat1(
         cam::LightIntensity(0.1, 0, 0),
         cam::LightIntensity(1.0, 0.0, 0.0),
@@ -52,20 +56,33 @@ int main() {
         50,
         0.0f
     );
+#pragma endregion
 
-    Material mat3(
-        cam::LightIntensity(0.1, 0, 0),
-        cam::LightIntensity(1.0, 1.0, 1.0),
-        cam::LightIntensity(0.5, 0.5, 0.5),
-        50,
-        0.0
-    );
-
+#pragma region Lights
     licht::DirectionalLight light1(
         cam::LightIntensity(1, 1, 1),
-        math::vec3(0, 0, -1)
+        math::vec3(0, 1, 1)
     );
+    licht::PointLight light2(
+        cam::LightIntensity(1, 1, 1),
+        math::vec3(1, 1, 1),
+        1.0f,
+        0.0f,
+        0.0f
+    );
+    licht::SpotLight light3(
+        cam::LightIntensity(1, 1, 1),
+        math::vec3(0.5, 2, 0),
+        math::vec3(0, 1, 0.25f),
+        1.0f,
+        0.0f,
+        0.0f,
+        45.0f, // Cut-off angle
+        60.0f  // Drop-off angle
+    );
+#pragma endregion
 
+#pragma region Objects
     math::vec3 s1_center(0, 0, 0);
     math::sphere s1(s1_center, .5f, mat1);
     math::vec3 s2Center(0, 0, -1);
@@ -76,10 +93,11 @@ int main() {
     math::vec3 p1Normal(0, 1, 0); // Normal pointing up
     math::vec3 p1Center(0, -0.5, 0); // Center of the plane
     math::plane p1(p1Normal, p1Center, mat3);
+#pragma endregion
 
     std::vector<licht::Light*> lights;
     // lights.push_back(&light1);
-    lights.push_back(&light2);
+    lights.push_back(&light3);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
@@ -104,7 +122,7 @@ int main() {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, lights, objects, bg);
     }
-    scene.renderScene(200, 200);
+    scene.renderScene(400, 400);
 
     return 0;
 }
