@@ -33,9 +33,9 @@ cam::LightIntensity AreaLight::getDiffuse(math::vec3 point, math::primitive *obj
             float rv = (j + static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) / samplesV;
 
             math::vec3 samplePos = position + ((ru - 0.5f) * 2.0f) * u + ((rv - 0.5f) * 2.0f) * v;
-            math::vec3 L = (samplePos - point).normalize();
+            math::vec3 lightDir = (samplePos - point).normalize();
 
-            float diffuseFactor = std::max(0.0f, object->getNormal(point).dotProduct(L));
+            float diffuseFactor = std::max(0.0f, object->getNormal(point).dotProduct(lightDir));
 
             totalDiffuse = (totalDiffuse + (this->intensity * object->material.diffuse * diffuseFactor));
         }
@@ -55,9 +55,9 @@ cam::LightIntensity AreaLight::getSpecular(math::vec3 point, math::primitive *ob
             float rv = (j + static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) / samplesV;
 
             math::vec3 samplePos = position + ((ru - 0.5f) * 2.0f) * u + ((rv - 0.5f) * 2.0f) * v;
-            math::vec3 L = (samplePos - point).normalize();
+            math::vec3 lightDir = (samplePos - point).normalize();
 
-            math::vec3 R = (object->getNormal(point) * (2.0f * object->getNormal(point).dotProduct(L)) - L).normalize();
+            math::vec3 R = (object->getNormal(point) * (2.0f * object->getNormal(point).dotProduct(lightDir)) - lightDir).normalize();
             float specAngle = std::max(0.0f, R.dotProduct(viewDir));
             float specularFactor = std::pow(specAngle, object->material.shininess);
 

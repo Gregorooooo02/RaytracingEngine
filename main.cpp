@@ -4,7 +4,6 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "AreaLight.h"
 #include "LightIntensity.h"
 #include "Orthographic.h"
 #include "Perspective.h"
@@ -85,17 +84,17 @@ int main() {
     );
     licht::AreaLight light4(
         cam::LightIntensity(1, 1, 1),
-        math::vec3(1.5f, 1, -1),
+        math::vec3(0, 1, -0.5f),
         math::vec3(1, 0, 0), // u vector
         math::vec3(0, 1, 0), // v vector
-        4, // Number of samples in u direction
-        4  // Number of samples in v direction
+        2, // Number of samples in u direction
+        2  // Number of samples in v direction
     );
 #pragma endregion
 
 #pragma region Objects
     math::vec3 s1_center(0, 0, 0);
-    math::sphere s1(s1_center, .5f, mat1);
+    math::sphere s1(s1_center, 0.5f, mat1);
     math::vec3 s2Center(0, 0, -1);
     math::sphere s2(s2Center, 0.5f, mat2);
     math::vec3 s3Center(0, 0, 0);
@@ -108,7 +107,7 @@ int main() {
 
     std::vector<licht::Light*> lights;
     // lights.push_back(&light1);
-    lights.push_back(&light4);
+    lights.push_back(&light3);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);

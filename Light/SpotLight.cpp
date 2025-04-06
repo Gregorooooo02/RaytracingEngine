@@ -30,8 +30,8 @@ cam::LightIntensity SpotLight::getAmbient(math::primitive *object) {
 }
 
 cam::LightIntensity SpotLight::getDiffuse(math::vec3 point, math::primitive *object) {
-    math::vec3 L = (this->position - point).normalize();
-    float spotFactor = this->direction.normalize().dotProduct(L);
+    math::vec3 lightDir = (this->position - point).normalize();
+    float spotFactor = this->direction.normalize().dotProduct(lightDir);
     float cosCutOff = std::cos(cutOffAngle * M_PI / 180.0f);
 
     // Check if the point is within the cut-off angle (inside the light cone)
@@ -47,15 +47,15 @@ cam::LightIntensity SpotLight::getDiffuse(math::vec3 point, math::primitive *obj
 
     float dropOffFactor = std::pow(spotFactor, dropOffAngle);
     math::vec3 normal = object->getNormal(point);
-    float diffuseFactor = std::max(0.0f, normal.dotProduct(L));
+    float diffuseFactor = std::max(0.0f, normal.dotProduct(lightDir));
 
     return this->intensity * object->material.diffuse * diffuseFactor *
         attenuation * dropOffFactor;
 }
 
 cam::LightIntensity SpotLight::getSpecular(math::vec3 point, math::primitive *object, cam::Camera *camera) {
-    math::vec3 L = (this->position - point).normalize();
-    float spotFactor = this->direction.normalize().dotProduct(L);
+    math::vec3 lightDir = (this->position - point).normalize();
+    float spotFactor = this->direction.normalize().dotProduct(lightDir);
     float cosCutOff = std::cos(cutOffAngle * M_PI / 180.0f);
 
     // Check if the point is within the cut-off angle (inside the light cone)
@@ -73,7 +73,7 @@ cam::LightIntensity SpotLight::getSpecular(math::vec3 point, math::primitive *ob
 
     math::vec3 normal = object->getNormal(point);
     math::vec3 viewDir = (camera->position - point).normalize(); // Assuming camera->position is the camera position
-    math::vec3 R = (normal * (2.0f * normal.dotProduct(L)) - L).normalize();
+    math::vec3 R = (normal * (2.0f * normal.dotProduct(lightDir)) - lightDir).normalize();
     float specAngle = std::max(0.0f, R.dotProduct(viewDir));
     float specularFactor = std::pow(specAngle, object->material.shininess);
 

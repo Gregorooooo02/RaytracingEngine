@@ -23,9 +23,9 @@ cam::LightIntensity DirectionalLight::getDiffuse(math::vec3 point,
   math::vec3 normal = object->getNormal(point);
   math::vec3 lightDir = this->direction.normalize();
 
-  float dotProduct = std::max(0.0f, normal.dotProduct(lightDir));
+  float diffuseFactor = std::max(0.0f, normal.dotProduct(lightDir));
 
-  return this->intensity * object->material.diffuse * dotProduct;
+  return this->intensity * object->material.diffuse * diffuseFactor;
 }
 
 cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primitive* object, cam::Camera* camera) {
