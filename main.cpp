@@ -1,6 +1,10 @@
+#include <AreaLight.h>
+
 #include "Scene.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
+#include "AreaLight.h"
 #include "LightIntensity.h"
 #include "Orthographic.h"
 #include "Perspective.h"
@@ -10,7 +14,6 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <SpotLight.h>
 #include <vector>
 
 int main() {
@@ -21,7 +24,7 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        10                               // Number of samples
+        10                                // Number of samples
     );
     cam::Perspective persp(
         math::vec3(2, 0, 0),        // Camera position
@@ -29,7 +32,7 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        10,                              // Number of samples
+        10,                                // Number of samples
         90.0f                             // Field of view
     );
 #pragma endregion
@@ -80,6 +83,14 @@ int main() {
         45.0f, // Cut-off angle
         60.0f  // Drop-off angle
     );
+    licht::AreaLight light4(
+        cam::LightIntensity(1, 1, 1),
+        math::vec3(1.5f, 1, -1),
+        math::vec3(1, 0, 0), // u vector
+        math::vec3(0, 1, 0), // v vector
+        4, // Number of samples in u direction
+        4  // Number of samples in v direction
+    );
 #pragma endregion
 
 #pragma region Objects
@@ -97,7 +108,7 @@ int main() {
 
     std::vector<licht::Light*> lights;
     // lights.push_back(&light1);
-    lights.push_back(&light3);
+    lights.push_back(&light4);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
