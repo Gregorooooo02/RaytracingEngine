@@ -69,8 +69,13 @@ cam::LightIntensity AreaLight::getSpecular(math::vec3 point, math::primitive *ob
 }
 
 math::ray AreaLight::getShadowRay(math::vec3 origin) {
+    float ru = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+    float rv = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+
+    math::vec3 samplePos = position + ((ru - 0.5f) * 2.0f) * u + ((rv - 0.5f) * 2.0f) * v;
+
     math::ray ray;
     ray.o = origin;
-    ray.d = (this->position - origin).normalize();
+    ray.d = (samplePos - origin).normalize();
     return ray;
 }

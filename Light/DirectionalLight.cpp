@@ -8,7 +8,7 @@ using namespace licht;
 
 DirectionalLight::DirectionalLight(cam::LightIntensity intensity,
                                    math::vec3 direction)
-    : Light(intensity), direction(direction) {}
+    : Light(intensity), direction(-direction) {}
 
 DirectionalLight::DirectionalLight()
     : Light(cam::LightIntensity(1, 1, 1)), direction(math::vec3(0, -1, -1)) {
@@ -34,8 +34,8 @@ cam::LightIntensity DirectionalLight::getSpecular(math::vec3 point, math::primit
     math::vec3 viewDir = (camera->position - point).normalize(); // Assuming camera->position is the camera position
 
     math::vec3 R = (normal * (2.0f * normal.dotProduct(lightDir)) - lightDir).normalize();
-    float dotProduct = std::max(0.0f, R.dotProduct(viewDir));
-    float specularFactor = std::pow(dotProduct, object->material.shininess);
+    float specAngle = std::max(0.0f, R.dotProduct(viewDir));
+    float specularFactor = std::pow(specAngle, object->material.shininess);
 
     return this->intensity * object->material.specular * specularFactor;
 }

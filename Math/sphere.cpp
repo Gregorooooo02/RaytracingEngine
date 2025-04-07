@@ -53,7 +53,7 @@ vec3* sphere::hit(ray &ray) {
   if (x1 > 0) {
     x = x1;
   } else if (x2 > 0) {
-    x = 2;
+    x = x2;
   } else {
     return nullptr;
   }
@@ -65,5 +65,5 @@ vec3* sphere::hit(ray &ray) {
 
 vec3 sphere::getNormal(vec3 point) {
   vec3 normal = (point - this->center).normalize();
-  return normal.normalize();
+  return normal;
 }
