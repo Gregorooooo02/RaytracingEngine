@@ -9,7 +9,7 @@ SpotLight::SpotLight(cam::LightIntensity intensity, math::vec3 position,
                     math::vec3 direction, float constAttenuation,
                     float linearAttenuation, float quadraticAttenuation,
                     float cutOffAngle, float dropOffAngle)
-                    : Light(intensity), position(position), direction(direction),
+                    : Light(intensity), position(position), direction(-direction),
                     constAttenuation(constAttenuation), linearAttenuation(linearAttenuation),
                     quadraticAttenuation(quadraticAttenuation), cutOffAngle(cutOffAngle),
                     dropOffAngle(dropOffAngle) {}

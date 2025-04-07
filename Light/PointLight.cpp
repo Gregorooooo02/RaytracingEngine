@@ -1,6 +1,7 @@
 #include "PointLight.h"
 
 #include <algorithm>
+#include <cmath>
 
 using namespace licht;
 
