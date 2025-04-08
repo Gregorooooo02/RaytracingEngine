@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "LightIntensity.h"
+#include "AreaLight.h"
 #include "Orthographic.h"
 #include "Perspective.h"
 #include "primitive.h"
@@ -55,42 +56,67 @@ Image Scene::renderScene(int width, int height) {
   float width_chunk_size = width / 6.0f;
   float height_chunk_size = height / 6.0f;
   Image img(width, height);
+
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       int current_chunk_x = std::floor(x / width_chunk_size);
       int current_chunk_y = std::floor(y / height_chunk_size);
       LightIntensity pixel_color;
+
       for (int samples = 0; samples < camera->samplesCount; samples++) {
         bool hit = false;
         math::ray ray = camera->generateRay(x, y, width, height);
+
         for (int o = 0; o < this->objects.size(); o++) {
           math::vec3 *intersection = this->objects[o]->hit(ray);
           if (intersection != nullptr) {
-            for (int l = 0; l < this->lights.size(); l++) {
-              math::ray shadowRay = lights[l]->getShadowRay(*intersection);
-              math::vec3 *hitShadow = nullptr;
-              for (int o2 = 0; o2 < this->objects.size(); o2++) {
-                if (o2 == o) {
-                  continue;
+              for (int l = 0; l < this->lights.size(); l++) {
+                float shadowFactor = 1.0f;
+                if (licht::AreaLight* areaLight = dynamic_cast<licht::AreaLight*>(this->lights[l])) {
+                  int totalSamples = areaLight->samplesU * areaLight->samplesV;
+                  int unblocked = 0;
+                  const float eps = 1e-4f;
+
+                  math::vec3 normal = this->objects[o]->getNormal(*intersection);
+                  math::vec3 shadowOrigin = *intersection + normal * eps;
+
+                  for (int s = 0; s < totalSamples; s++) {
+                    math::ray shadowRay = areaLight->getShadowRay(shadowOrigin);
+                    bool blocked = false;
+                    for (int o2 = 0; o2 < this->objects.size(); o2++) {
+                      if (o2 == o) continue;
+                      math::vec3* hitShadow = objects[o2]->hit(shadowRay);
+                      if (hitShadow != nullptr) {
+                        delete hitShadow;
+                        blocked = true;
+                        break;
+                      }
+                      delete hitShadow;
+                    }
+                    if (!blocked) unblocked++;
+                  }
+                  shadowFactor = static_cast<float>(unblocked) / totalSamples;
                 }
-                hitShadow = this->objects[o2]->hit(shadowRay);
-                if (hitShadow != nullptr) {
-                  break;
+                else {
+                  math::ray shadowRay = lights[l]->getShadowRay(*intersection);
+                  math::vec3* hitShadow = nullptr;
+                  for (int o2 = 0; o2 < this->objects.size(); o2++) {
+                    if (o2 == o) continue;
+                    hitShadow = objects[o2]->hit(shadowRay);
+                    if (hitShadow != nullptr) {
+                      delete hitShadow;
+                      shadowFactor = 0.0f;
+                      break;
+                    }
+                    delete hitShadow;
+                  }
+                }
+                pixel_color = pixel_color + this->lights[l]->getAmbient(this->objects[o]);
+                if (shadowFactor > 0.0f) {
+                  pixel_color = pixel_color + (this->lights[l]->getDiffuse(*intersection, this->objects[o]) * shadowFactor);
+                  pixel_color = pixel_color + (this->lights[l]->getSpecular(*intersection, this->objects[o], this->camera) * shadowFactor);
                 }
               }
-              if (hitShadow != nullptr) {
-                pixel_color =
-                    pixel_color + this->lights[l]->getAmbient(this->objects[o]);
-              } else {
-                pixel_color = pixel_color + this->lights[l]->getAmbient(
-                    this->objects[o]);
-                pixel_color = pixel_color + this->lights[l]->getDiffuse(
-                    *intersection, this->objects[o]);
-                pixel_color = pixel_color + this->lights[l]->getSpecular(
-                    *intersection, this->objects[o], this->camera);
-              }
-              delete hitShadow;
-            }
             hit = true;
             break;
           }

@@ -26,12 +26,12 @@ int main() {
         10                                // Number of samples
     );
     cam::Perspective persp(
-        math::vec3(2, 0, 0),        // Camera position
+        math::vec3(2, 0, 0),         // Camera position
         math::vec3(0, 0, -.5),       // Target position
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        10,                                // Number of samples
+        10,                               // Number of samples
         90.0f                             // Field of view
     );
 #pragma endregion
@@ -106,8 +106,7 @@ int main() {
 #pragma endregion
 
     std::vector<licht::Light*> lights;
-    // lights.push_back(&light1);
-    lights.push_back(&light3);
+    lights.push_back(&light4);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
