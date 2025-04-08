@@ -87,8 +87,8 @@ int main() {
         math::vec3(0, 2, -0.5f),
         math::vec3(1, 0, 0), // u vector
         math::vec3(0, 1, 2), // v vector
-        5, // Number of samples in u direction
-        5  // Number of samples in v direction
+        2, // Number of samples in u direction
+        2  // Number of samples in v direction
     );
 #pragma endregion
 

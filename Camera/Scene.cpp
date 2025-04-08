@@ -91,6 +91,7 @@ Image Scene::renderScene(int width, int height) {
                         blocked = true;
                         break;
                       }
+                      delete hitShadow;
                     }
                     if (!blocked) unblocked++;
                   }
@@ -107,6 +108,7 @@ Image Scene::renderScene(int width, int height) {
                       shadowFactor = 0.0f;
                       break;
                     }
+                    delete hitShadow;
                   }
                 }
                 pixel_color = pixel_color + this->lights[l]->getAmbient(this->objects[o]);
