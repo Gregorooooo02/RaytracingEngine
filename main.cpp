@@ -67,7 +67,7 @@ int main() {
     );
     licht::PointLight light2(
         cam::LightIntensity(1, 1, 1),
-        math::vec3(0.5f, 0.75f, 0),
+        math::vec3(2, 0.75f, 0),
         1.0f,
         0.5f,
         0.25f
@@ -106,7 +106,7 @@ int main() {
 #pragma endregion
 
     std::vector<licht::Light*> lights;
-    lights.push_back(&light4);
+    lights.push_back(&light2);
 
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
