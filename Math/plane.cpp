@@ -1,7 +1,5 @@
 #include "plane.h"
-#include "LightIntensity.h"
-
-#include <iostream>
+#include <cmath>
 
 using namespace math;
 
