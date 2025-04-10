@@ -17,10 +17,11 @@ namespace cam {
 
       LightIntensity bg;
       LightIntensity* colors[6][6];
+      int maxDepth = 5;
     public:
       Scene();
-      Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity* colors[6][6]);
-      Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity bg);
+      Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity* colors[6][6], int maxDepth);
+      Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity bg, int maxDepth);
       ~Scene() = default;
       Image renderScene(int width, int height);
   };

@@ -80,3 +80,7 @@ math::ray AreaLight::getShadowRay(math::vec3 origin) {
     ray.d = (samplePos - origin).normalize();
     return ray;
 }
+
+math::vec3 AreaLight::getPosition() {
+    return position;
+}
