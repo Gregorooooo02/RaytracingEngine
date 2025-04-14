@@ -10,7 +10,6 @@
 namespace cam {
   class Scene {
     private:
-      Camera* camera;
 
       std::vector<licht::Light*> lights;
       std::vector<math::primitive*> objects;
@@ -19,10 +18,11 @@ namespace cam {
       LightIntensity* colors[6][6];
       int maxDepth = 5;
     public:
+      Camera* camera;
       Scene();
       Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity* colors[6][6], int maxDepth);
       Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity bg, int maxDepth);
       ~Scene() = default;
-      Image renderScene(int width, int height);
+      Image renderScene(int width, int height, int *current);
   };
 }

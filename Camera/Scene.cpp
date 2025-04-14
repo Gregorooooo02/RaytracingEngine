@@ -2,15 +2,11 @@
 #include "AreaLight.h"
 #include "Light.h"
 #include "LightIntensity.h"
-#include "Orthographic.h"
 #include "Perspective.h"
 #include "primitive.h"
 #include "vec3.h"
-
 #include <SoftPointLight.h>
 #include <cmath>
-#include <iostream>
-#include <ostream>
 #include <vector>
 
 using namespace cam;
@@ -307,7 +303,7 @@ LightIntensity shade(math::ray &ray, std::vector<licht::Light*> lights,
   return pixel_color;
 }
 
-Image Scene::renderScene(int width, int height) {
+Image Scene::renderScene(int width, int height, int *current) {
   float width_chunk_size = width / 6.0f;
   float height_chunk_size = height / 6.0f;
   Image img(width, height);
@@ -327,18 +323,8 @@ Image Scene::renderScene(int width, int height) {
       }
       pixel_color = pixel_color / camera->samplesCount;
       img.setPixel(x, y, pixel_color);
+      *current += 1;
     }
-  }
-
-  Camera *cam = this->camera;
-  if (dynamic_cast<Perspective *>(cam)) {
-    img.save("perspective.ppm");
-    std::cout << "Image saved as perspective.ppm" << std::endl;
-  } else if (dynamic_cast<Orthographic *>(cam)) {
-    img.save("orthographic.ppm");
-    std::cout << "Image saved as orthographic.ppm" << std::endl;
-  } else {
-    std::cout << "Unknown camera type." << std::endl;
   }
 
   return img;
