@@ -1,32 +1,22 @@
-#include <AreaLight.h>
-
 #include "DirectionalLight.h"
 #include "Image.h"
 #include "LightIntensity.h"
 #include "Orthographic.h"
 #include "Perspective.h"
-#include "PointLight.h"
 #include "Scene.h"
 #include "SoftPointLight.h"
 #include "SpotLight.h"
+#include "Utils/cursorHider.h"
 #include "plane.h"
 #include "sphere.h"
 #include "vec3.h"
-
+#include <AreaLight.h>
 #include <cmath>
 #include <cstdlib>
 #include <future>
 #include <iostream>
 #include <string>
-#include <thread>
-#include <utility>
 #include <vector>
-
-#ifdef _WIN32
-#define command "cls"
-#else
-#define command "clear"
-#endif
 
 cam::Image run(cam::Scene *scene, int *done, int width, int height) {
   cam::Image foo = scene->renderScene(width, height, done);
@@ -34,6 +24,7 @@ cam::Image run(cam::Scene *scene, int *done, int width, int height) {
 }
 
 int main() {
+  CursorHider foo;
 #pragma region Camera
   cam::Orthographic orto(math::vec3(0, 0.15f, 2),  // Camera position
                          math::vec3(0, 0.15f, -1), // Target position
@@ -174,14 +165,16 @@ int main() {
   }
 
   int done = 0;
-  int width = 800;
-  int height = 800;
+  int width = 100;
+  int height = 100;
   int total = width * height;
   auto thread = std::async(run, &scene, &done, width, height);
 
+  std::cout << "\033[2J\033[1;1H";
+
   while (done < total) {
     float ratio = (float)done / (float)total * 40;
-    int doneSegments = std::floor(ratio);
+    int doneSegments = std::round(ratio);
     std::string progress = "|";
     for (int i = 0; i < doneSegments; i++) {
       progress += "=";
@@ -193,10 +186,11 @@ int main() {
 
     progress += "|";
 
-    system(command);
+    std::cout << "\033[2F";
+
     std::cout << "Rendering progress: "
-              << std::round((float(done) / total) * 10000) / 100 << "%\n";
-    std::cout << progress << "\n";
+              << std::round((float(done) / total) * 10000) / 100 << "%\n"
+              << progress << "\n";
   }
 
   cam::Image image = thread.get();
