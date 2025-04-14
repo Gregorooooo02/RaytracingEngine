@@ -232,16 +232,72 @@ math::ray getReflectionRay(math::vec3 &hitDirection, IntersectionInfo &info) {
   return result;
 }
 
+math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float iorExternal, float iorInternal) {
+  math::ray result;
+  // Incident ray direction - the ray that hits the object
+  math::vec3 incidentDir = incidentRay.d.normalize();
+  // Normal at the intersection point
+  math::vec3 normal = info.object->getNormal(info.point).normalize();
+
+  // Calculate the cosine of the angle of incidence
+  float cos = incidentDir.dotProduct(normal);
+  // eta - the ratio of the indices of refraction
+  float eta;
+
+  // Check if the ray is entering or exiting the material
+  // If the cosine is negative, it means the ray is entering the material
+  // If the cosine is positive, it means the ray is exiting the material
+  if(cos < 0) {
+    cos = -cos;
+    eta = iorExternal / iorInternal;
+  } else {
+    normal = -normal;
+    eta = iorInternal / iorExternal;
+  }
+
+  // In Snell's Law, the refract equation goes:
+  // cos²θ₂ = 1 - eta²*(1 - cos²θ₁), so k is the cos²θ₂
+  // If cos²θ₂ < 0, the refraction doesn't occur
+  float k = 1.0f - eta * eta * (1 - cos * cos);
+  if (k < 0.0f) {
+    // If k < 0, total internal reflection occurs
+    math::vec3 reflectRayDir = (incidentDir - normal * (2.0f * incidentDir.dotProduct(normal))).normalize();
+    reflectRayDir = reflectRayDir.normalize();
+
+    result.o = info.point + normal * 1e-4f; // Offset to avoid self-intersection
+    result.d = reflectRayDir;
+
+    return result;
+  } else {
+    // Else, calculate the refracted ray
+    math::vec3 refractRayDir = (incidentDir * eta) + (normal * (eta * cos - sqrt(k)));
+    refractRayDir = refractRayDir.normalize();
+
+    result.o = info.point - normal * 1e-4f; // Offset to avoid self-intersection
+    result.d = refractRayDir;
+
+    return result;
+  }
+}
+
 LightIntensity shade(math::ray &ray, std::vector<licht::Light*> lights,
                     std::vector<math::primitive*> objects, Camera* camera,
                     LightIntensity bg, int depth, int maxDepth) {
-  if (depth > maxDepth) return bg;
-
   IntersectionInfo info = findClosestIntersection(ray, objects);
-  if (!info.hit) return bg;
-
   LightIntensity pixel_color = localIllumination(info, lights, objects, camera);
+
+  if (depth > maxDepth) return pixel_color;
+
+  if (!info.hit) return bg;
   float reflectionFactor = info.object->material.reflection;
+  float refractionFactor = info.object->material.refraction;
+
+  if (refractionFactor > 0.0f) {
+    math::ray refractionRay = getRefractedRay(ray, info, 1.0f, info.object->material.ior);
+    LightIntensity refractionColor = shade(refractionRay, lights, objects, camera, bg, depth + 1, maxDepth);
+    pixel_color = pixel_color * (1 - refractionFactor) + refractionColor * refractionFactor;
+  }
+
   if (reflectionFactor > 0.0f) {
     math::ray reflectionRay = getReflectionRay(ray.d, info);
     LightIntensity reflectionColor = shade(reflectionRay, lights, objects, camera, bg, depth + 1, maxDepth);

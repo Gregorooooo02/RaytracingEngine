@@ -32,18 +32,29 @@ int main() {
         math::vec3(0, 1, 0),        // Up vector
         0.1f,                             // Near plane
         1000.0f,                          // Far plane
-        10,                               // Number of samples
+        25,                               // Number of samples
         90.0f                             // Field of view
     );
 #pragma endregion
 
 #pragma region Material
-    Material mat1(
+    Material matReflection(
         cam::LightIntensity(0.01, 0.01, 0.01),
         cam::LightIntensity(1.0, 1.0, 1.0),
         cam::LightIntensity(0.7, 0.7, 0.7),
         50,
+        1.0f,
+        0.0f,
         1.0f
+    );
+    Material matRefraction(
+        cam::LightIntensity(0.01, 0.01, 0.01),
+        cam::LightIntensity(1.0, 1.0, 1.0),
+        cam::LightIntensity(0.7, 0.7, 0.7),
+        50,
+        0.0f,
+        1.0f,
+        1.7f
     );
     // Blue material
     Material mat2(
@@ -51,7 +62,9 @@ int main() {
         cam::LightIntensity(0.0, 0.0, 1.0),
         cam::LightIntensity(0.0, 0.0, 0.0),
         50,
-        0.0f
+        0.0f,
+        0.0f,
+        1.0f
     );
     // White material
     Material mat3(
@@ -59,7 +72,9 @@ int main() {
         cam::LightIntensity(0.8f, 0.8f, 0.8f),
         cam::LightIntensity(0.0f, 0.0f, 0.0f),
         0,
-        0.0f
+        0.0f,
+        0.0f,
+        1.0f
     );
     // Red material
     Material mat4(
@@ -67,22 +82,19 @@ int main() {
         cam::LightIntensity(1.0f, 0.0f, 0.0f),
         cam::LightIntensity(0.0f, 0.0f, 0.0f),
         0,
-        0.0f
+        0.0f,
+        0.0f,
+        1.0f
     );
-    // Green material
-    Material mat5(
-        cam::LightIntensity(0, 0.01f, 0),
-        cam::LightIntensity(0, 1.0f, 0),
-        cam::LightIntensity(1.0f, 1.0f, 1.0f),
-        40,
-        0.0f
-    );
+    // Black material
     Material mat6(
         cam::LightIntensity(0, 0, 0),
         cam::LightIntensity(0, 0, 0),
         cam::LightIntensity(0, 0, 0),
         0,
-        0.0f
+        0.0f,
+        0.0f,
+        1.0f
     );
 #pragma endregion
 
@@ -144,12 +156,11 @@ int main() {
 
 #pragma region Objects
     math::vec3 s1Center(-0.5f, 0, 0);
-    math::sphere s1(s1Center, 0.5f, mat1);
-    math::vec3 s2Center(0.4f, -0.25f, 0.5f);
-    math::sphere s2(s2Center, 0.25f, mat2);
-    math::vec3 s3Center(-0.1f, -0.4f, 0.6f);
-    math::sphere s3(s3Center, 0.1f, mat5);
+    math::sphere s1(s1Center, 0.5f, matReflection);
+    math::vec3 s2Center(0.25f, -0.1f, 0.5f);
+    math::sphere s2(s2Center, 0.4f, matRefraction);
 
+    // Plane creating a floor
     math::vec3 p1Normal(0, 1, 0); // Normal pointing up
     math::vec3 p1Center(0, -0.5, 0); // Center of the plane
     math::plane p1(p1Normal, p1Center, mat3);
@@ -183,7 +194,6 @@ int main() {
     std::vector<math::primitive*> objects;
     objects.push_back(&s1);
     objects.push_back(&s2);
-    objects.push_back(&s3);
 
     objects.push_back(&p1);
     objects.push_back(&p2);
@@ -201,15 +211,15 @@ int main() {
 
     if (choice == 1) {
         std::cout << "Using Orthographic camera." << std::endl;
-        scene = cam::Scene(&orto, lights, objects, bg, 4);
+        scene = cam::Scene(&orto, lights, objects, bg, 1);
     } else if (choice == 2) {
         std::cout << "Using Perspective camera." << std::endl;
-        scene = cam::Scene(&persp, lights, objects, bg, 1);
+        scene = cam::Scene(&persp, lights, objects, bg, 10);
     } else {
         std::cerr << "Invalid choice. Defaulting to Orthographic camera." << std::endl;
         scene = cam::Scene(&orto, lights, objects, bg, 4);
     }
-    scene.renderScene(400, 400);
+    scene.renderScene(800, 800);
 
     return 0;
 }
