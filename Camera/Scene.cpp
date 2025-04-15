@@ -266,6 +266,8 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
     return result;
   } else {
     // Else, calculate the refracted ray
+    // t = η * i + (η * cosθ₁ - sqrt(1 - η² * (1 - cosθ₁²))) * n
+    // t = η * i + (η * cosθ₁ - sqrt(k)) * n
     math::vec3 refractRayDir = (incidentDir * eta) + (normal * (eta * cos - sqrt(k)));
     refractRayDir = refractRayDir.normalize();
 
