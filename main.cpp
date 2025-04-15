@@ -7,6 +7,7 @@
 #include "SoftPointLight.h"
 #include "SpotLight.h"
 #include "Utils/cursorHider.h"
+#include "Utils/Mesh.h"
 #include "plane.h"
 #include "sphere.h"
 #include "vec3.h"
@@ -40,7 +41,7 @@ int main() {
     math::vec3(0, 1, 0),     // Up vector
     0.1f,                          // Near plane
     1000.0f,                       // Far plane
-    25,                            // Number of samples
+    10,                            // Number of samples
     90.0f                          // Field of view
   );
 #pragma endregion
@@ -119,7 +120,7 @@ int main() {
     1.0f,
     0.5f,
     0.2f,
-    20
+    5
   );
   // Point light from the left
   licht::SoftPointLight lightPoint2(
@@ -129,7 +130,7 @@ int main() {
     1.0f,
     0.5f,
     0.2f,
-    20
+    5
   );
   // Point light from the right
   licht::SoftPointLight lightPoint3(
@@ -139,7 +140,7 @@ int main() {
     1.0f,
     0.5f,
     0.2f,
-    20
+    5
   );
   licht::SpotLight light3(
     cam::LightIntensity(1, 1, 1),
@@ -192,6 +193,16 @@ int main() {
   math::vec3 p5Normal(0, -1, 0);    // Normal pointing down
   math::vec3 p5Center(0, 2.75f, 0); // Center of the plane
   math::plane p5(p5Normal, p5Center, mat6);
+
+  math::vec3 meshCenter(0, -0.5f, 0);
+  math::vec3 meshRotation(0, 0.2, 0);
+  auto *meshObject = new math::Mesh(
+    "../Assets/cube.obj",
+    meshCenter,
+    0.75f,
+    meshRotation,
+    matReflection // Material of the mesh
+  );
 #pragma endregion
 
   std::vector<licht::Light *> lights;
@@ -200,8 +211,9 @@ int main() {
   lights.push_back(&lightPoint3);
 
   std::vector<math::primitive *> objects;
-  objects.push_back(&s1);
-  objects.push_back(&s2);
+  // objects.push_back(&s1);
+  // objects.push_back(&s2);
+  objects.push_back(meshObject);
 
   objects.push_back(&p1);
   objects.push_back(&p2);
@@ -222,7 +234,7 @@ int main() {
     scene = cam::Scene(&orto, lights, objects, bg, 4);
   } else if (choice == 2) {
     std::cout << "Using Perspective camera." << std::endl;
-    scene = cam::Scene(&persp, lights, objects, bg, 10);
+    scene = cam::Scene(&persp, lights, objects, bg, 2);
   } else {
     std::cerr << "Invalid choice. Defaulting to Orthographic camera."
               << std::endl;
@@ -270,6 +282,8 @@ int main() {
   } else {
     std::cout << "Unknown camera type." << std::endl;
   }
+
+  delete meshObject;
 
   return 0;
 }

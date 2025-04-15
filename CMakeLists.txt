@@ -9,6 +9,7 @@ file(GLOB SOURCES
     main.cpp
     Math/*.cpp
     Utils/*.cpp
+    Utils/*.h
     Camera/*.cpp
     Light/*.cpp
 )

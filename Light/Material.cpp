@@ -16,8 +16,8 @@ Material::Material(const cam::LightIntensity& ambient)
     : ambient(ambient), diffuse(cam::LightIntensity(0.0f, 0.0f, 0.0f)), specular(cam::LightIntensity(0.0f, 0.0f, 0.0f)), shininess(0.0f), reflection(0.0f) {}
 
 Material::Material() {
-    this->ambient = cam::LightIntensity(0.0f, 0.0f, 0.0f);
-    this->diffuse = cam::LightIntensity(0.0f, 0.0f, 0.0f);
+    this->ambient = cam::LightIntensity(0.01f, 0.01f, 0.01f);
+    this->diffuse = cam::LightIntensity(1.0f, 1.0f, 1.0f);
     this->specular = cam::LightIntensity(0.0f, 0.0f, 0.0f);
     this->shininess = 0.0f;
     this->reflection = 0.0f; // Amount of reflection [0.0f - 1.0f]

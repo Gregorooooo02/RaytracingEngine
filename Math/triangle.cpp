@@ -22,7 +22,7 @@ triangle::triangle(vec3 v1, vec3 v2, vec3 v3, Material& material) {
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
 }
 
-triangle::triangle(vec3& v1, vec3& v2, vec3& v3, Material& material) {
+triangle::triangle(const vec3& v1, const vec3& v2, const vec3& v3, const Material& material) {
     this->vertices[0] = v1;
     this->vertices[1] = v2;
     this->vertices[2] = v3;
@@ -30,6 +30,15 @@ triangle::triangle(vec3& v1, vec3& v2, vec3& v3, Material& material) {
 
     vec3 temp = v3.substract(v1);
     this->normal = (v2.substract(v1)).crossProduct(temp).normalize();
+}
+
+triangle::triangle(const vec3 &v1, const vec3 &v2, const vec3 &v3, const vec3 &n1, const vec3 &n2, const vec3 &n3, const Material &material) {
+    this->vertices[0] = v1;
+    this->vertices[1] = v2;
+    this->vertices[2] = v3;
+    this->material = material;
+
+    this->normal = (n1 + n2 + n3).normalize();
 }
 
 triangle::~triangle() = default;
