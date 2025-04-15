@@ -13,152 +13,91 @@
 #include <AreaLight.h>
 #include <cmath>
 #include <cstdlib>
+#include <ctime>
 #include <future>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 
-cam::Image run(cam::Scene *scene, int *done, int width, int height) {
-  cam::Image foo = scene->renderScene(width, height, done);
-  return foo;
+void run(cam::Scene *scene, std::atomic<int> &done, int width, int height,
+         int startWidth, int endWidth, int startHeight, int endHeight,
+         cam::Image *image) {
+  scene->renderScene(width, height, startWidth, endWidth, startHeight,
+                     endHeight, done, image);
 }
 
 int main() {
   CursorHider foo;
 #pragma region Camera
-  cam::Orthographic orto(
-    math::vec3(0, 0.15f, 2),  // Camera position
-    math::vec3(0, 0.15f, -1), // Target position
-    math::vec3(0, 1, 0),      // Up vector
-    0.1f,                           // Near plane
-    1000.0f,                        // Far plane
-    10                              // Number of samples
+  cam::Orthographic orto(math::vec3(0, 0.15f, 2),  // Camera position
+                         math::vec3(0, 0.15f, -1), // Target position
+                         math::vec3(0, 1, 0),      // Up vector
+                         0.1f,                     // Near plane
+                         1000.0f,                  // Far plane
+                         10                        // Number of samples
   );
-  cam::Perspective persp(
-    math::vec3(0, 0.5f, 2),  // Camera position
-    math::vec3(0, 0.5f, -1), // Target position
-    math::vec3(0, 1, 0),     // Up vector
-    0.1f,                          // Near plane
-    1000.0f,                       // Far plane
-    25,                            // Number of samples
-    90.0f                          // Field of view
+  cam::Perspective persp(math::vec3(0, 0.5f, 2),  // Camera position
+                         math::vec3(0, 0.5f, -1), // Target position
+                         math::vec3(0, 1, 0),     // Up vector
+                         0.1f,                    // Near plane
+                         1000.0f,                 // Far plane
+                         25,                      // Number of samples
+                         90.0f                    // Field of view
   );
 #pragma endregion
 
 #pragma region Material
   Material matReflection(
-    cam::LightIntensity(0.01, 0.01, 0.01),
-    cam::LightIntensity(1.0, 1.0, 1.0),
-    cam::LightIntensity(0.7, 0.7, 0.7),
-    50,
-    1.0f,
-    0.0f,
-    1.0f
-  );
+      cam::LightIntensity(0.01, 0.01, 0.01), cam::LightIntensity(1.0, 1.0, 1.0),
+      cam::LightIntensity(0.7, 0.7, 0.7), 50, 1.0f, 0.0f, 1.0f);
   Material matRefraction(
-    cam::LightIntensity(0.01, 0.01, 0.01),
-    cam::LightIntensity(1.0, 1.0, 1.0),
-    cam::LightIntensity(0.7, 0.7, 0.7),
-    50,
-    0.15f,
-    1.0f,
-    1.7f
-  );
+      cam::LightIntensity(0.01, 0.01, 0.01), cam::LightIntensity(1.0, 1.0, 1.0),
+      cam::LightIntensity(0.7, 0.7, 0.7), 50, 0.15f, 1.0f, 1.7f);
   // Blue material
-  Material mat2(
-    cam::LightIntensity(0, 0, 0.01),
-    cam::LightIntensity(0.0, 0.0, 1.0),
-    cam::LightIntensity(0.0, 0.0, 0.0),
-    50,
-    0.0f,
-    0.0f,
-    1.0f
-  );
+  Material mat2(cam::LightIntensity(0, 0, 0.01),
+                cam::LightIntensity(0.0, 0.0, 1.0),
+                cam::LightIntensity(0.0, 0.0, 0.0), 50, 0.0f, 0.0f, 1.0f);
   // White material
-  Material mat3(
-    cam::LightIntensity(0.01f, 0.01f, 0.01f),
-    cam::LightIntensity(0.8f, 0.8f, 0.8f),
-    cam::LightIntensity(0.0f, 0.0f, 0.0f),
-    0,
-    0.0f,
-    0.0f,
-    1.0f
-  );
+  Material mat3(cam::LightIntensity(0.01f, 0.01f, 0.01f),
+                cam::LightIntensity(0.8f, 0.8f, 0.8f),
+                cam::LightIntensity(0.0f, 0.0f, 0.0f), 0, 0.0f, 0.0f, 1.0f);
   // Red material
-  Material mat4(
-    cam::LightIntensity(0.01f, 0.0f, 0.0f),
-    cam::LightIntensity(1.0f, 0.0f, 0.0f),
-    cam::LightIntensity(0.0f, 0.0f, 0.0f),
-    0,
-    0.0f,
-    0.0f,
-    1.0f
-  );
+  Material mat4(cam::LightIntensity(0.01f, 0.0f, 0.0f),
+                cam::LightIntensity(1.0f, 0.0f, 0.0f),
+                cam::LightIntensity(0.0f, 0.0f, 0.0f), 0, 0.0f, 0.0f, 1.0f);
   // Black material
-  Material mat6(
-    cam::LightIntensity(0, 0, 0),
-    cam::LightIntensity(0, 0, 0),
-    cam::LightIntensity(0, 0, 0),
-    0,
-    0.0f,
-    0.0f,
-    1.0f
-  );
+  Material mat6(cam::LightIntensity(0, 0, 0), cam::LightIntensity(0, 0, 0),
+                cam::LightIntensity(0, 0, 0), 0, 0.0f, 0.0f, 1.0f);
 #pragma endregion
 
 #pragma region Lights
-  licht::DirectionalLight light1(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(0, -1, -1)
-  );
+  licht::DirectionalLight light1(cam::LightIntensity(1, 1, 1),
+                                 math::vec3(0, -1, -1));
   // Point light from the back
-  licht::SoftPointLight lightPoint1(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(0, 1.5f, -0.25f),
-    1.0f,
-    1.0f,
-    0.5f,
-    0.2f,
-    20
-  );
+  licht::SoftPointLight lightPoint1(cam::LightIntensity(1, 1, 1),
+                                    math::vec3(0, 1.5f, -0.25f), 1.0f, 1.0f,
+                                    0.5f, 0.2f, 20);
   // Point light from the left
-  licht::SoftPointLight lightPoint2(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(-1.25f, 1.5f, 0.5f),
-    1.0f,
-    1.0f,
-    0.5f,
-    0.2f,
-    20
-  );
+  licht::SoftPointLight lightPoint2(cam::LightIntensity(1, 1, 1),
+                                    math::vec3(-1.25f, 1.5f, 0.5f), 1.0f, 1.0f,
+                                    0.5f, 0.2f, 20);
   // Point light from the right
-  licht::SoftPointLight lightPoint3(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(1.25f, 1.5f, 0.5f),
-    1.0f,
-    1.0f,
-    0.5f,
-    0.2f,
-    20
-  );
-  licht::SpotLight light3(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(0, 2, 0.5f),
-    math::vec3(0, -1, 0),
-    1.0f,
-    0.0f,
-    0.0f,
-    45.0f, // Cut-off angle
-    30.0f  // Drop-off angle
+  licht::SoftPointLight lightPoint3(cam::LightIntensity(1, 1, 1),
+                                    math::vec3(1.25f, 1.5f, 0.5f), 1.0f, 1.0f,
+                                    0.5f, 0.2f, 20);
+  licht::SpotLight light3(cam::LightIntensity(1, 1, 1), math::vec3(0, 2, 0.5f),
+                          math::vec3(0, -1, 0), 1.0f, 0.0f, 0.0f,
+                          45.0f, // Cut-off angle
+                          30.0f  // Drop-off angle
   );
   // Area light from the top
-  licht::AreaLight light4(
-    cam::LightIntensity(1, 1, 1),
-    math::vec3(0, 2, 0.5),  // Center of the area light
-    math::vec3(0.5f, 0, 0), // U direction
-    math::vec3(0, 0, 0.5f), // V direction
-    5, // Number of samples in U direction
-    5  // Number of samples in V direction
+  licht::AreaLight light4(cam::LightIntensity(1, 1, 1),
+                          math::vec3(0, 2, 0.5),  // Center of the area light
+                          math::vec3(0.5f, 0, 0), // U direction
+                          math::vec3(0, 0, 0.5f), // V direction
+                          5, // Number of samples in U direction
+                          5  // Number of samples in V direction
   );
 #pragma endregion
 
@@ -229,13 +168,44 @@ int main() {
     scene = cam::Scene(&orto, lights, objects, bg, 4);
   }
 
-  int done = 0;
-  int width = 400;
-  int height = 400;
+  std::atomic<int> done{0};
+  int width = 100;
+  int height = 100;
+  int threadCount = 4;
+  int widthChunk = width / threadCount;
+  int widthRemainder = width % threadCount;
+  int heightChunk = height / threadCount;
+  int heightReminder = height % threadCount;
   int total = width * height;
-  auto thread = std::async(run, &scene, &done, width, height);
+  cam::Image image(width, height);
+  auto threads = std::vector<std::thread>(threadCount);
+
+  int startWidth = 0;
+  int startHeight = 0;
+  for (int i = 0; i < std::sqrt(threadCount); i++) {
+    int endWidth = startWidth + widthChunk;
+    int endHeight = startHeight + heightChunk;
+
+    if (i < widthRemainder) {
+      endWidth++;
+    }
+    if (i < heightReminder) {
+      endHeight++;
+    }
+
+    threads.emplace_back(run, &scene, std::ref(done), width, height, startWidth,
+                    endWidth, startHeight, endHeight, &image);
+    std::cout << "Starting thread " << i << " for pixels: " << startWidth << "-"
+              << endWidth << "; " << startHeight << "-" << endHeight << "\n";
+
+    startWidth = endWidth;
+    startHeight = endHeight;
+  }
 
   std::cout << "\033[2J\033[1;1H";
+
+  std::cout << "\n\n";
+  time_t start = time(NULL);
 
   while (done < total) {
     float ratio = (float)done / (float)total * 40;
@@ -258,8 +228,6 @@ int main() {
               << progress << "\n";
   }
 
-  cam::Image image = thread.get();
-
   cam::Camera *cam = scene.camera;
   if (dynamic_cast<cam::Perspective *>(cam)) {
     image.save("perspective.ppm");
@@ -270,6 +238,8 @@ int main() {
   } else {
     std::cout << "Unknown camera type." << std::endl;
   }
+
+  std::cout << "Time elapsed: " << time(NULL) - start << "s.\n";
 
   return 0;
 }
