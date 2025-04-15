@@ -257,7 +257,7 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
   float k = 1.0f - eta * eta * (1 - cos * cos);
   if (k < 0.0f) {
     // If k < 0, total internal reflection occurs
-    math::vec3 reflectRayDir = (incidentDir - normal * (2.0f * incidentDir.dotProduct(normal))).normalize();
+    math::vec3 reflectRayDir = incidentDir - 2.0f * (normal * incidentDir.dotProduct(normal));
     reflectRayDir = reflectRayDir.normalize();
 
     result.o = info.point + normal * 1e-4f; // Offset to avoid self-intersection
