@@ -7,6 +7,7 @@
 #include "SoftPointLight.h"
 #include "SpotLight.h"
 #include "Utils/cursorHider.h"
+#include "Utils/threading.h"
 #include "plane.h"
 #include "sphere.h"
 #include "vec3.h"
@@ -20,11 +21,9 @@
 #include <thread>
 #include <vector>
 
-void run(cam::Scene *scene, std::atomic<int> &done, int width, int height,
-         int startWidth, int endWidth, int startHeight, int endHeight,
-         cam::Image *image) {
-  scene->renderScene(width, height, startWidth, endWidth, startHeight,
-                     endHeight, done, image);
+void run(ThreadManager *threadManager, cam::Scene *scene, cam::Image *image,
+         std::atomic<int> &done, std::vector<std::thread> *threads) {
+  threadManager->run(scene, image, done, threads);
 }
 
 int main() {
@@ -168,42 +167,17 @@ int main() {
     scene = cam::Scene(&orto, lights, objects, bg, 4);
   }
 
+  int width = 400;
+  int height = 400;
+  int threadCount = 1;
+  ThreadManager threadManager(width, height, threadCount);
   std::atomic<int> done{0};
-  int width = 100;
-  int height = 100;
-  int threadCount = 4;
-  int widthChunk = width / threadCount;
-  int widthRemainder = width % threadCount;
-  int heightChunk = height / threadCount;
-  int heightReminder = height % threadCount;
-  int total = width * height;
   cam::Image image(width, height);
-  auto threads = std::vector<std::thread>(threadCount);
-
-  int startWidth = 0;
-  int startHeight = 0;
-  for (int i = 0; i < std::sqrt(threadCount); i++) {
-    int endWidth = startWidth + widthChunk;
-    int endHeight = startHeight + heightChunk;
-
-    if (i < widthRemainder) {
-      endWidth++;
-    }
-    if (i < heightReminder) {
-      endHeight++;
-    }
-
-    threads.emplace_back(run, &scene, std::ref(done), width, height, startWidth,
-                    endWidth, startHeight, endHeight, &image);
-    std::cout << "Starting thread " << i << " for pixels: " << startWidth << "-"
-              << endWidth << "; " << startHeight << "-" << endHeight << "\n";
-
-    startWidth = endWidth;
-    startHeight = endHeight;
-  }
+  int total = width * height;
+  std::vector<std::thread> threads;
+  auto task = std::async(&run, &threadManager, &scene, &image, std::ref(done), &threads);
 
   std::cout << "\033[2J\033[1;1H";
-
   std::cout << "\n\n";
   time_t start = time(NULL);
 
@@ -240,6 +214,7 @@ int main() {
   }
 
   std::cout << "Time elapsed: " << time(NULL) - start << "s.\n";
+  task.wait();
 
   return 0;
 }
