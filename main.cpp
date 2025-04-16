@@ -12,6 +12,7 @@
 #include "sphere.h"
 #include "vec3.h"
 #include <AreaLight.h>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
@@ -190,9 +191,9 @@ int main() {
     scene = cam::Scene(&orto, lights, objects, bg, 4);
   }
 
-  int width = 400;
-  int height = 400;
-  int threadCount = 1;
+  int width = 800;
+  int height = 800;
+  int threadCount = 8;
   ThreadManager threadManager(width, height, threadCount);
   std::atomic<int> done{0};
   cam::Image image(width, height);
@@ -200,9 +201,10 @@ int main() {
   std::vector<std::thread> threads;
   auto task = std::async(&run, &threadManager, &scene, &image, std::ref(done), &threads);
 
-  std::cout << "\033[2J\033[1;1H";
+//  std::cout << "\033[2J\033[1;1H";
   std::cout << "\n\n";
   time_t start = time(NULL);
+
 
   while (done < total) {
     float ratio = (float)done / (float)total * 40;
@@ -225,6 +227,8 @@ int main() {
               << progress << "\n";
   }
 
+  task.wait();
+
   cam::Camera *cam = scene.camera;
   if (dynamic_cast<cam::Perspective *>(cam)) {
     image.save("perspective.ppm");
@@ -237,7 +241,6 @@ int main() {
   }
 
   std::cout << "Time elapsed: " << time(NULL) - start << "s.\n";
-  task.wait();
 
   return 0;
 }
