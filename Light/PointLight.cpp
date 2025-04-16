@@ -65,3 +65,7 @@ math::ray PointLight::getShadowRay(math::vec3 origin) {
     ray.d = (this->position - origin).normalize();
     return ray;
 }
+
+math::vec3 PointLight::getPosition() {
+    return this->position;
+}

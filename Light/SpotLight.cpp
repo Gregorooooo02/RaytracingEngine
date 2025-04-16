@@ -87,3 +87,8 @@ math::ray SpotLight::getShadowRay(math::vec3 origin) {
     ray.d = (this->position - origin).normalize();
     return ray;
 }
+
+math::vec3 SpotLight::getPosition() {
+    return this->position;
+}
+

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cmath>
 
 using namespace licht;
 
@@ -78,4 +79,8 @@ math::ray AreaLight::getShadowRay(math::vec3 origin) {
     ray.o = origin;
     ray.d = (samplePos - origin).normalize();
     return ray;
+}
+
+math::vec3 AreaLight::getPosition() {
+    return position;
 }

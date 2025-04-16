@@ -46,3 +46,7 @@ math::ray DirectionalLight::getShadowRay(math::vec3 origin) {
   ray.d = this->direction;
   return ray;
 }
+
+math::vec3 DirectionalLight::getPosition() {
+  return {0, 0, 0}; // Directional light has no specific position
+}

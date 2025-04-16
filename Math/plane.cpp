@@ -1,7 +1,5 @@
 #include "plane.h"
-#include "LightIntensity.h"
-
-#include <iostream>
+#include <cmath>
 
 using namespace math;
 
@@ -67,19 +65,18 @@ plane::~plane() {}
 
 vec3* plane::hit(ray& ray) {
     const float EPSILON = 1e-6f;
-    float denominator = this->normal.dotProduct(ray.d);
-    if (fabs(denominator) < EPSILON) {
+    float NdotD = this->normal.dotProduct(ray.d);
+    if (fabs(NdotD) < EPSILON) {
         return nullptr;
     }
 
-    float t = -(this->normal.dotProduct(ray.o) + this->d) / denominator;
-    if (t < denominator) {
+    float t = -(this->normal.dotProduct(ray.o) + this->d) / NdotD;
+    if (t < EPSILON) {
         return nullptr;
     }
 
     vec3 result = ray.point_at(t);
-    vec3* resultPtr = new vec3(result);
-    return resultPtr;
+    return new vec3(result);
 }
 
 vec3 plane::getNormal(vec3 point) {

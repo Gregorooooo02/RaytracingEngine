@@ -14,6 +14,7 @@ namespace licht {
         cam::LightIntensity getDiffuse(math::vec3 point, math::primitive* object) override;
         cam::LightIntensity getSpecular(math::vec3 point, math::primitive* object, cam::Camera* camera) override;
         math::ray getShadowRay(math::vec3 origin) override;
+        math::vec3 getPosition() override;
 
         // int isInShadow(bool isHit, math::primitive* object);
     };
