@@ -5,6 +5,7 @@
 #include "Light.h"
 #include "primitive.h"
 
+#include <atomic>
 #include <vector>
 
 namespace cam {
@@ -23,6 +24,6 @@ namespace cam {
       Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity* colors[6][6], int maxDepth);
       Scene(Camera* camera, std::vector<licht::Light*> lights, std::vector<math::primitive*> objects, LightIntensity bg, int maxDepth);
       ~Scene() = default;
-      Image renderScene(int width, int height, int *current);
+      void renderScene(int width, int height, int startWidth, int endWidth, int startHeight, int endHeight, std::atomic<int> &done, Image *image);
   };
 }
