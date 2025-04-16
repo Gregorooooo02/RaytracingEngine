@@ -144,7 +144,7 @@ float shadowFactorAreaLight(licht::AreaLight *areaLight,
   return static_cast<float>(unblocked) / totalSamples;
 }
 
-float shadowFactorSoftPoint(licht::SoftPointLight *pointLight,
+float shadowFactorSoftPoint(licht::SphereLight *pointLight,
                             math::vec3 *intersection,
                             std::vector<math::primitive *> objects,
                             int objectIndex) {
@@ -199,7 +199,7 @@ LightIntensity localIllumination(IntersectionInfo &info, std::vector<licht::Ligh
     if (licht::AreaLight* areaLight = dynamic_cast<licht::AreaLight*>(lights[l])) {
       shadowFactor = shadowFactorAreaLight(areaLight, &info.point, objects, index);
     }
-    else if (licht::SoftPointLight* pointLight = dynamic_cast<licht::SoftPointLight*>(lights[l])) {
+    else if (licht::SphereLight* pointLight = dynamic_cast<licht::SphereLight*>(lights[l])) {
       shadowFactor = shadowFactorSoftPoint(pointLight, &info.point, objects, index);
     }
     else {

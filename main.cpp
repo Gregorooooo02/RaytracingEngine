@@ -112,7 +112,7 @@ int main() {
     math::vec3(0, -1, -1)
   );
   // Point light from the back
-  licht::SoftPointLight lightPoint1(
+  licht::SphereLight lightPoint1(
     cam::LightIntensity(1, 1, 1),
     math::vec3(0, 1.5f, -0.25f),
     1.0f,
@@ -122,7 +122,7 @@ int main() {
     20
   );
   // Point light from the left
-  licht::SoftPointLight lightPoint2(
+  licht::SphereLight lightPoint2(
     cam::LightIntensity(1, 1, 1),
     math::vec3(-1.25f, 1.5f, 0.5f),
     1.0f,
@@ -132,7 +132,7 @@ int main() {
     20
   );
   // Point light from the right
-  licht::SoftPointLight lightPoint3(
+  licht::SphereLight lightPoint3(
     cam::LightIntensity(1, 1, 1),
     math::vec3(1.25f, 1.5f, 0.5f),
     1.0f,
