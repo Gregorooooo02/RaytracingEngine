@@ -1,12 +1,14 @@
 #include "Scene.h"
 #include "AreaLight.h"
+#include "SphereLight.h"
 #include "Light.h"
 #include "LightIntensity.h"
 #include "Perspective.h"
 #include "primitive.h"
 #include "vec3.h"
-#include <SoftPointLight.h>
+#include <atomic>
 #include <cmath>
+#include <iostream>
 #include <vector>
 
 using namespace cam;
@@ -58,10 +60,12 @@ struct IntersectionInfo {
   float t;
   math::vec3 point;
   math::vec3 normal;
-  math::primitive* object;
+  math::primitive *object;
 };
 
-IntersectionInfo findClosestIntersection(math::ray &ray, std::vector<math::primitive*> &objects) {
+IntersectionInfo
+findClosestIntersection(math::ray &ray,
+                        std::vector<math::primitive *> &objects) {
   IntersectionInfo info;
   info.hit = false;
   info.t = std::numeric_limits<float>::max();
@@ -144,7 +148,7 @@ float shadowFactorAreaLight(licht::AreaLight *areaLight,
   return static_cast<float>(unblocked) / totalSamples;
 }
 
-float shadowFactorSoftPoint(licht::SoftPointLight *pointLight,
+float shadowFactorSoftPoint(licht::SphereLight *pointLight,
                             math::vec3 *intersection,
                             std::vector<math::primitive *> objects,
                             int objectIndex) {
@@ -181,8 +185,10 @@ float shadowFactorSoftPoint(licht::SoftPointLight *pointLight,
   return static_cast<float>(unblocked) / totalSamples;
 }
 
-LightIntensity localIllumination(IntersectionInfo &info, std::vector<licht::Light*> &lights,
-                                  std::vector<math::primitive*> &objects, Camera* camera) {
+LightIntensity localIllumination(IntersectionInfo &info,
+                                 std::vector<licht::Light *> &lights,
+                                 std::vector<math::primitive *> &objects,
+                                 Camera *camera) {
   LightIntensity pixel_color;
 
   for (int l = 0; l < lights.size(); l++) {
@@ -199,7 +205,7 @@ LightIntensity localIllumination(IntersectionInfo &info, std::vector<licht::Ligh
     if (licht::AreaLight* areaLight = dynamic_cast<licht::AreaLight*>(lights[l])) {
       shadowFactor = shadowFactorAreaLight(areaLight, &info.point, objects, index);
     }
-    else if (licht::SoftPointLight* pointLight = dynamic_cast<licht::SoftPointLight*>(lights[l])) {
+    else if (licht::SphereLight* pointLight = dynamic_cast<licht::SphereLight*>(lights[l])) {
       shadowFactor = shadowFactorSoftPoint(pointLight, &info.point, objects, index);
     }
     else {
@@ -208,8 +214,12 @@ LightIntensity localIllumination(IntersectionInfo &info, std::vector<licht::Ligh
 
     pixel_color = pixel_color + lights[l]->getAmbient(info.object);
     if (shadowFactor > 0.0f) {
-      pixel_color = pixel_color + (lights[l]->getDiffuse(info.point, info.object) * shadowFactor);
-      pixel_color = pixel_color + (lights[l]->getSpecular(info.point, info.object, camera) * shadowFactor);
+      pixel_color =
+          pixel_color +
+          (lights[l]->getDiffuse(info.point, info.object) * shadowFactor);
+      pixel_color = pixel_color +
+                    (lights[l]->getSpecular(info.point, info.object, camera) *
+                     shadowFactor);
     }
   }
 
@@ -218,17 +228,20 @@ LightIntensity localIllumination(IntersectionInfo &info, std::vector<licht::Ligh
 
 math::ray getReflectionRay(math::vec3 &hitDirection, IntersectionInfo &info) {
   math::ray result;
-  result.o = info.point + info.normal * 1e-4f; // Offset to avoid self-intersection
+  result.o =
+      info.point + info.normal * 1e-4f; // Offset to avoid self-intersection
 
   math::vec3 normal = info.object->getNormal(info.point);
-  math::vec3 r = hitDirection - (2 * normal * (normal.dotProduct(hitDirection)));
+  math::vec3 r =
+      hitDirection - (2 * normal * (normal.dotProduct(hitDirection)));
 
   result.d = r;
 
   return result;
 }
 
-math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float iorExternal, float iorInternal) {
+math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info,
+                          float iorExternal, float iorInternal) {
   math::ray result;
   // Incident ray direction - the ray that hits the object
   math::vec3 incidentDir = incidentRay.d.normalize();
@@ -243,7 +256,7 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
   // Check if the ray is entering or exiting the material
   // If the cosine is negative, it means the ray is entering the material
   // If the cosine is positive, it means the ray is exiting the material
-  if(cos < 0) {
+  if (cos < 0) {
     cos = -cos;
     eta = iorExternal / iorInternal;
   } else {
@@ -257,7 +270,8 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
   float k = 1.0f - eta * eta * (1 - cos * cos);
   if (k < 0.0f) {
     // If k < 0, total internal reflection occurs
-    math::vec3 reflectRayDir = incidentDir - 2.0f * (normal * incidentDir.dotProduct(normal));
+    math::vec3 reflectRayDir =
+        incidentDir - 2.0f * (normal * incidentDir.dotProduct(normal));
     reflectRayDir = reflectRayDir.normalize();
 
     result.o = info.point + normal * 1e-4f; // Offset to avoid self-intersection
@@ -266,7 +280,10 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
     return result;
   } else {
     // Else, calculate the refracted ray
-    math::vec3 refractRayDir = (incidentDir * eta) + (normal * (eta * cos - sqrt(k)));
+    // t = η * i + (η * cosθ₁ - sqrt(1 - η² * (1 - cosθ₁²))) * n
+    // t = η * i + (η * cosθ₁ - sqrt(k)) * n
+    math::vec3 refractRayDir =
+        (incidentDir * eta) + (normal * (eta * cos - sqrt(k)));
     refractRayDir = refractRayDir.normalize();
 
     result.o = info.point - normal * 1e-4f; // Offset to avoid self-intersection
@@ -276,40 +293,50 @@ math::ray getRefractedRay(math::ray &incidentRay, IntersectionInfo &info, float 
   }
 }
 
-LightIntensity shade(math::ray &ray, std::vector<licht::Light*> lights,
-                    std::vector<math::primitive*> objects, Camera* camera,
-                    LightIntensity bg, int depth, int maxDepth) {
+LightIntensity shade(math::ray &ray, std::vector<licht::Light *> lights,
+                     std::vector<math::primitive *> objects, Camera *camera,
+                     LightIntensity bg, int depth, int maxDepth) {
   IntersectionInfo info = findClosestIntersection(ray, objects);
   LightIntensity pixel_color = localIllumination(info, lights, objects, camera);
 
-  if (depth > maxDepth) return pixel_color;
+  if (depth > maxDepth)
+    return pixel_color;
 
-  if (!info.hit) return bg;
+  if (!info.hit)
+    return bg;
   float reflectionFactor = info.object->material.reflection;
   float refractionFactor = info.object->material.refraction;
 
   if (refractionFactor > 0.0f) {
-    math::ray refractionRay = getRefractedRay(ray, info, 1.0f, info.object->material.ior);
-    LightIntensity refractionColor = shade(refractionRay, lights, objects, camera, bg, depth + 1, maxDepth);
-    pixel_color = pixel_color * (1 - refractionFactor) + refractionColor * refractionFactor;
+    math::ray refractionRay =
+        getRefractedRay(ray, info, 1.0f, info.object->material.ior);
+    LightIntensity refractionColor =
+        shade(refractionRay, lights, objects, camera, bg, depth + 1, maxDepth);
+    pixel_color = pixel_color * (1 - refractionFactor) +
+                  refractionColor * refractionFactor;
   }
 
   if (reflectionFactor > 0.0f) {
     math::ray reflectionRay = getReflectionRay(ray.d, info);
-    LightIntensity reflectionColor = shade(reflectionRay, lights, objects, camera, bg, depth + 1, maxDepth);
-    pixel_color = pixel_color * (1 - reflectionFactor) + reflectionColor * reflectionFactor;
+    LightIntensity reflectionColor =
+        shade(reflectionRay, lights, objects, camera, bg, depth + 1, maxDepth);
+    pixel_color = pixel_color * (1 - reflectionFactor) +
+                  reflectionColor * reflectionFactor;
   }
 
   return pixel_color;
 }
 
-Image Scene::renderScene(int width, int height, int *current) {
+void Scene::renderScene(int width, int height, int startWidth, int endWidth,
+                        int startHeight, int endHeight, std::atomic<int> &done,
+                        Image *image) {
   float width_chunk_size = width / 6.0f;
   float height_chunk_size = height / 6.0f;
-  Image img(width, height);
 
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+
+  for (int y = startHeight; y < endHeight; y++) {
+    for (int x = startWidth; x < endWidth; x++) {
+
       int current_chunk_x = std::floor(x / width_chunk_size);
       int current_chunk_y = std::floor(y / height_chunk_size);
 
@@ -317,15 +344,16 @@ Image Scene::renderScene(int width, int height, int *current) {
 
       for (int s = 0; s < camera->samplesCount; s++) {
         math::ray ray = camera->generateRay(x, y, width, height);
-        pixel_color = pixel_color + shade(ray, this->lights, this->objects,
-                                        this->camera, *this->colors[current_chunk_x][current_chunk_y], 0,
-                                        this->maxDepth);
+        pixel_color =
+            pixel_color + shade(ray, this->lights, this->objects, this->camera,
+                                *this->colors[current_chunk_x][current_chunk_y],
+                                0, this->maxDepth);
       }
       pixel_color = pixel_color / camera->samplesCount;
-      img.setPixel(x, y, pixel_color);
-      *current += 1;
+      image->setPixel(x, y, pixel_color);
+
+      done += 1;
     }
   }
 
-  return img;
 }

@@ -1,11 +1,11 @@
-#include "SoftPointLight.h"
+#include "SphereLight.h"
 
 #include <algorithm>
 #include <cmath>
 
 using namespace licht;
 
-SoftPointLight::SoftPointLight(cam::LightIntensity intensity,
+SphereLight::SphereLight(cam::LightIntensity intensity,
                                math::vec3 position, float radius,
                                float constAttenuation, float linearAttenuation,
                                float quadraticAttenuation, int samples)
@@ -13,7 +13,7 @@ SoftPointLight::SoftPointLight(cam::LightIntensity intensity,
     constAttenuation(constAttenuation), linearAttenuation(linearAttenuation),
     quadraticAttenuation(quadraticAttenuation), samples(samples) {}
 
-SoftPointLight::SoftPointLight() {
+SphereLight::SphereLight() {
   intensity = cam::LightIntensity(1, 1, 1);
   position = math::vec3(0, 0, 0);
   radius = 1.0f;
@@ -23,11 +23,11 @@ SoftPointLight::SoftPointLight() {
   samples = 1;
 }
 
-cam::LightIntensity SoftPointLight::getAmbient(math::primitive *object) {
+cam::LightIntensity SphereLight::getAmbient(math::primitive *object) {
   return this->intensity * object->material.ambient;
 }
 
-cam::LightIntensity SoftPointLight::getDiffuse(math::vec3 point,
+cam::LightIntensity SphereLight::getDiffuse(math::vec3 point,
                                                 math::primitive *object) {
   math::vec3 normal = object->getNormal(point);
   math::vec3 lightDir = (this->position - point).normalize();
@@ -43,7 +43,7 @@ cam::LightIntensity SoftPointLight::getDiffuse(math::vec3 point,
          attenuation;
 }
 
-cam::LightIntensity SoftPointLight::getSpecular(math::vec3 point,
+cam::LightIntensity SphereLight::getSpecular(math::vec3 point,
                                                   math::primitive *object,
                                                   cam::Camera *camera) {
   math::vec3 normal = object->getNormal(point);
@@ -64,7 +64,7 @@ cam::LightIntensity SoftPointLight::getSpecular(math::vec3 point,
          attenuation;
 }
 
-math::ray SoftPointLight::getShadowRay(math::vec3 origin) {
+math::ray SphereLight::getShadowRay(math::vec3 origin) {
   float u = static_cast<float>(rand()) / RAND_MAX;
   float v = static_cast<float>(rand()) / RAND_MAX;
   float theta = 2.0f * M_PI * u;
@@ -86,7 +86,7 @@ math::ray SoftPointLight::getShadowRay(math::vec3 origin) {
   return shadowRay;
 }
 
-math::vec3 SoftPointLight::getPosition() {
+math::vec3 SphereLight::getPosition() {
   return this->position;
 }
 
