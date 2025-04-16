@@ -1,4 +1,4 @@
-#include "SoftPointLight.h"
+#include "SphereLight.h"
 
 #include <algorithm>
 #include <cmath>

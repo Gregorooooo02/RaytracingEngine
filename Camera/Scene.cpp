@@ -1,11 +1,11 @@
 #include "Scene.h"
 #include "AreaLight.h"
+#include "SphereLight.h"
 #include "Light.h"
 #include "LightIntensity.h"
 #include "Perspective.h"
 #include "primitive.h"
 #include "vec3.h"
-#include <SoftPointLight.h>
 #include <atomic>
 #include <cmath>
 #include <iostream>

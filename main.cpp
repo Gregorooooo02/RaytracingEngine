@@ -4,7 +4,7 @@
 #include "Orthographic.h"
 #include "Perspective.h"
 #include "Scene.h"
-#include "SoftPointLight.h"
+#include "SphereLight.h"
 #include "SpotLight.h"
 #include "Utils/cursorHider.h"
 #include "Utils/threading.h"
