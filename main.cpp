@@ -44,7 +44,7 @@ int main() {
     math::vec3(0, 1, 0),     // Up vector
     0.1f,                          // Near plane
     1000.0f,                       // Far plane
-    256,                           // Number of samples
+    1024,                          // Number of samples
     90.0f                          // Field of view
   );
 #pragma endregion
