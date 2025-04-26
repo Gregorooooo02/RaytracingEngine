@@ -84,7 +84,8 @@ vec3 vec3::normalize() {
   float length = result.len();
 
   if (length == 0.0f) {
-    throw std::invalid_argument("cant divide by 0");
+    // throw std::invalid_argument("cant divide by 0");
+    return vec3(0, 0, 0);
   }
 
   return result/length;

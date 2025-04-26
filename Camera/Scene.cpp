@@ -23,11 +23,14 @@ Scene::Scene() {
       this->colors[i][j] = new LightIntensity;
     }
   }
+  this->maxDepth = 4;
+  this->mode = RAY_TRACING;
 }
 
 Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
              std::vector<math::primitive *> objects,
-             LightIntensity *colors[6][6], int maxDepth) {
+             LightIntensity *colors[6][6], int maxDepth,
+             RenderMode mode) {
   this->camera = camera;
   this->lights = lights;
   this->objects = objects;
@@ -38,11 +41,12 @@ Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
     }
   }
   this->maxDepth = maxDepth;
+  this->mode = mode;
 }
 
 Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
              std::vector<math::primitive *> objects, LightIntensity bg,
-             int maxDepth) {
+             int maxDepth, RenderMode mode) {
   this->camera = camera;
   this->lights = lights;
   this->objects = objects;
@@ -53,6 +57,7 @@ Scene::Scene(Camera *camera, std::vector<licht::Light *> lights,
     }
   }
   this->maxDepth = maxDepth;
+  this->mode = mode;
 }
 
 struct IntersectionInfo {
@@ -63,8 +68,7 @@ struct IntersectionInfo {
   math::primitive *object;
 };
 
-IntersectionInfo
-findClosestIntersection(math::ray &ray,
+IntersectionInfo findClosestIntersection(math::ray &ray,
                         std::vector<math::primitive *> &objects) {
   IntersectionInfo info;
   info.hit = false;
@@ -327,27 +331,194 @@ LightIntensity shade(math::ray &ray, std::vector<licht::Light *> lights,
   return pixel_color;
 }
 
+math::vec3 sampleHemisphere(math::vec3 &normal) {
+  float xi1 = static_cast<float>(rand()) / RAND_MAX;
+  float xi2 = static_cast<float>(rand()) / RAND_MAX;
+  float r = sqrt(xi1);
+  float theta = 2 * M_PI * xi2;
+  float x = r * cos(theta);
+  float y = r * sin(theta);
+  float z = sqrt(1.0f - xi1);
+
+  math::vec3 helper = fabs(normal.x) > 0.1f ? math::vec3(0, 1, 0) : math::vec3(1, 0, 0);
+  math::vec3 tangent = normal.crossProduct(helper).normalize();
+  math::vec3 bitangent = normal.crossProduct(tangent);
+
+  return (tangent * x + bitangent * y + normal * z).normalize();
+}
+
+licht::Light* sampleLight(std::vector<licht::Light *> &lights) {
+  int n = lights.size();
+  if (n == 0) {
+    return nullptr;
+  }
+  int index = std::min(n - 1, static_cast<int>(rand() % n));
+  return lights[index];
+}
+
+LightIntensity estimateDirect(IntersectionInfo &info,
+                              std::vector<licht::Light *> &lights,
+                              std::vector<math::primitive *> &objects) {
+  licht::Light* light = sampleLight(lights);
+  if (light == nullptr) {
+    return LightIntensity(0, 0, 0);
+  }
+  float eps = 1e-4f;
+
+  math::vec3 wi;
+  math::vec3 samplePos;
+  float pdfLight;
+  LightIntensity Le;
+  light->sampleLight(info.point, wi, Le, pdfLight, samplePos);
+  float cosTheta = std::max(0.0f, info.normal.dotProduct(wi));
+  if (cosTheta <= 0.0f || pdfLight <= eps) {
+    return LightIntensity(0, 0, 0);
+  }
+
+  math::ray shadowRay;
+  shadowRay.o = info.point + info.normal * eps; // Offset to avoid self-intersection
+  shadowRay.d = wi;
+
+  IntersectionInfo shadowInfo = findClosestIntersection(shadowRay, objects);
+  if (shadowInfo.hit && shadowInfo.t < (samplePos - shadowRay.o).len() - eps) {
+    return LightIntensity(0, 0, 0); // Shadowed
+  }
+
+  LightIntensity f = info.object->material.diffuse / M_PI;
+
+  float weigth = lights.size();
+
+  return Le * f * cosTheta * weigth / pdfLight;
+}
+
+LightIntensity tracePath(math::ray &ray,
+                        std::vector<licht::Light *> &lights,
+                        std::vector<math::primitive *> &objects,
+                        int depth, int maxDepth) {
+  IntersectionInfo info = findClosestIntersection(ray, objects);
+  if (!info.hit || depth > maxDepth) {
+    return LightIntensity(0, 0, 0);
+  }
+  float eps = 1e-4f;
+
+  LightIntensity Lo = info.object->material.emission;
+  if (depth < maxDepth) {
+    Lo = Lo + estimateDirect(info, lights, objects);
+  }
+
+  float pContinue = std::max({
+    info.object->material.diffuse.r,
+    info.object->material.diffuse.g,
+    info.object->material.diffuse.b,
+    info.object->material.specular.r,
+    info.object->material.specular.g,
+    info.object->material.specular.b,
+  });
+
+  if (depth > 2 && (static_cast<float>(rand()) / RAND_MAX) > pContinue)
+    return Lo;
+  if (depth <= 2) pContinue = 1.0f;
+
+  float diffuseWeight = (info.object->material.diffuse.r +
+                        info.object->material.diffuse.g +
+                        info.object->material.diffuse.b) / 3.0f;
+  float specularWeight = (info.object->material.specular.r +
+                         info.object->material.specular.g +
+                         info.object->material.specular.b) / 3.0f;
+  float reflectionWeight = info.object->material.reflection;
+  float refractionWeight = info.object->material.refraction;
+  float totalWeight = diffuseWeight + specularWeight + reflectionWeight +
+                      refractionWeight + eps;
+
+  float r = static_cast<float>(rand()) / RAND_MAX * totalWeight;
+  math::ray scatterRay;
+  LightIntensity f;
+  float pdf = 1.0f;
+
+  if (r < diffuseWeight) { // Diffuse reflection
+    math::vec3 wi = sampleHemisphere(info.normal);
+    float cosTheta = std::max(0.0f, info.normal.dotProduct(wi));
+    if (cosTheta <= 0.0f) return Lo;
+
+    pdf = cosTheta / M_PI;
+    if (pdf <= eps) return Lo;
+
+    scatterRay.o = info.point + info.normal * eps;
+    scatterRay.d = wi;
+
+    f = info.object->material.diffuse / M_PI;
+    float wBranch = diffuseWeight / totalWeight;
+    LightIntensity Li = tracePath(scatterRay, lights, objects, depth + 1, maxDepth);
+    Lo = Lo + Li * f * cosTheta * wBranch / (pdf * pContinue);
+  } else if (r < diffuseWeight + specularWeight) { // Specular reflection
+    math::vec3 reflectDir = (ray.d - info.normal * 2.0f * ray.d.dotProduct(info.normal)).normalize();
+    float u1 = static_cast<float>(rand()) / RAND_MAX;
+    float u2 = static_cast<float>(rand()) / RAND_MAX;
+    float phi = 2.0f * M_PI * u1;
+    float cosAlpha = pow(u2, 1.0f / (info.object->material.shininess + 1.0f));
+    float sinAlpha = sqrt(1.0f - cosAlpha * cosAlpha);
+
+    math::vec3 tangent = reflectDir.crossProduct(info.normal).normalize();
+    math::vec3 bitangent = info.normal.crossProduct(tangent);
+    math::vec3 wi = (tangent * cos(phi) * sinAlpha +
+                     bitangent * sin(phi) * sinAlpha +
+                     reflectDir * cosAlpha).normalize();
+    float phongPdf = ((info.object->material.shininess + 1.0f)/(2.0f * M_PI)) *
+                     pow(cosAlpha, info.object->material.shininess);
+    pdf = phongPdf;
+    if (pdf <= eps) return Lo;
+    scatterRay.o = info.point + info.normal * eps;
+    scatterRay.d = wi;
+
+    f = info.object->material.specular *
+      ((info.object->material.shininess + 2.0f) /
+       (2.0f * M_PI)) * pow(std::max(0.0f, info.normal.dotProduct(wi)), info.object->material.shininess);
+    float wBranch = specularWeight / totalWeight;
+
+    LightIntensity Li = tracePath(scatterRay, lights, objects, depth + 1, maxDepth);
+    Lo = Lo + Li * f * cosAlpha * wBranch / (pdf * pContinue);
+  } else if (r < diffuseWeight + specularWeight + reflectionWeight) { // Reflection
+    scatterRay = getReflectionRay(ray.d, info);
+    f = LightIntensity(1, 1, 1);
+    pdf = 1.0f;
+    float wBranch = reflectionWeight / totalWeight;
+
+    LightIntensity Li = tracePath(scatterRay, lights, objects, depth + 1, maxDepth);
+    Lo = Lo + Li * f * wBranch / (pdf * pContinue);
+  } else { // Refraction
+    scatterRay = getRefractedRay(ray, info, 1.0f, info.object->material.ior);
+    f = LightIntensity(1, 1, 1);
+    pdf = 1.0f;
+    float wBranch = refractionWeight / totalWeight;
+
+    LightIntensity Li = tracePath(scatterRay, lights, objects, depth + 1, maxDepth);
+    Lo = Lo + Li * f * wBranch / (pdf * pContinue);
+  }
+
+  return Lo;
+}
+
 void Scene::renderScene(int width, int height, int startWidth, int endWidth,
                         int startHeight, int endHeight, std::atomic<int> &done,
                         Image *image) {
   float width_chunk_size = width / 6.0f;
   float height_chunk_size = height / 6.0f;
 
-
   for (int y = startHeight; y < endHeight; y++) {
     for (int x = startWidth; x < endWidth; x++) {
-
       int current_chunk_x = std::floor(x / width_chunk_size);
       int current_chunk_y = std::floor(y / height_chunk_size);
-
       LightIntensity pixel_color;
-
       for (int s = 0; s < camera->samplesCount; s++) {
         math::ray ray = camera->generateRay(x, y, width, height);
-        pixel_color =
-            pixel_color + shade(ray, this->lights, this->objects, this->camera,
-                                *this->colors[current_chunk_x][current_chunk_y],
-                                0, this->maxDepth);
+        if (this->mode == RAY_TRACING) {
+          pixel_color =
+              pixel_color + shade(ray, this->lights, this->objects, this->camera,
+                                  *this->colors[current_chunk_x][current_chunk_y],
+                                  0, this->maxDepth);
+        } else {
+          pixel_color = pixel_color + tracePath(ray, this->lights, this->objects, 0, this->maxDepth);
+        }
       }
       pixel_color = pixel_color / camera->samplesCount;
       image->setPixel(x, y, pixel_color);

@@ -90,4 +90,31 @@ math::vec3 SphereLight::getPosition() {
   return this->position;
 }
 
+void SphereLight::sampleLight(math::vec3 &point, math::vec3 &wi,
+                              cam::LightIntensity &Le, float &pdfLight,
+                              math::vec3 &samplePos) {
+  float u = static_cast<float>(rand()) / RAND_MAX;
+  float v = static_cast<float>(rand()) / RAND_MAX;
+  float theta = 2.0f * M_PI * u;
+  float phi = acos(2.0f * v - 1.0f);
+  float sinPhi = sin(phi);
 
+  math::vec3 p = this->position + radius * math::vec3(
+    sinPhi * cos(theta),
+    sinPhi * sin(theta),
+    cos(phi)
+  );
+
+  wi = (p - point).normalize();
+  float distance = (p - point).len();
+  float cosAtLight = (p - this->position).normalize().dotProduct(wi);
+  float area = 4.0f * M_PI * this->radius * this->radius;
+  pdfLight = distance / (area * cosAtLight);
+  samplePos = point + wi * distance;
+  // Calculate the attenuation factor
+  float attenuation =
+      1.0f / (this->constAttenuation +
+              this->linearAttenuation * distance +
+              this->quadraticAttenuation * distance * distance);
+  Le = this->intensity * attenuation;
+}

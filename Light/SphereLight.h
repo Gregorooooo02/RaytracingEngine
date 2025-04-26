@@ -28,5 +28,6 @@ namespace licht {
 
         math::ray getShadowRay(math::vec3 origin) override;
         math::vec3 getPosition() override;
+        void sampleLight(math::vec3 &point, math::vec3 &wi, cam::LightIntensity &Le, float &pdfLight, math::vec3 &samplePos) override;
     };
 } // namespace licht
