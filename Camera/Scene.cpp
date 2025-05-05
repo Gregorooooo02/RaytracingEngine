@@ -386,9 +386,9 @@ LightIntensity estimateDirect(IntersectionInfo &info,
 
   LightIntensity f = info.object->material.diffuse / M_PI;
 
-  float weigth = lights.size();
+  float weight = lights.size();
 
-  return Le * f * cosTheta * weigth / pdfLight;
+  return Le * f * cosTheta * weight / pdfLight;
 }
 
 LightIntensity tracePath(math::ray &ray,
